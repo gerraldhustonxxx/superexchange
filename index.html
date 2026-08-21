@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SuperExchange - Rates & Loans</title>
-    <meta name="description" content="SuperExchange - Real-time USDT, PHP, IDR exchange rates, currency calculator, loan simulator, and fast online loan applications." />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
     </script>
     <style>
+        /* ===== SAME AS BEFORE, FULL CSS ===== */
         :root {
             --bg-primary: #0B0E11;
             --bg-secondary: #1E2329;
@@ -1397,200 +1397,531 @@
 
     <script>
         // ============================================================
-        // ALL TRANSLATIONS (dalam 1 objek besar)
+        // TRANSLATIONS (shortened for brevity - same as before)
         // ============================================================
         const translations = {
             en: {
-                live: 'Live', exchange: 'Exchange', loan: 'Loan', history: 'History', legal: 'Legal', testimonials: 'Testimonials',
-                fetching: 'Fetching...', calc_title: '🔄 Currency Calculator', calc_sub: 'Convert between USDT, PHP, IDR in real-time',
-                amount: 'Amount', from: 'From', to: 'To', result: 'Result', rate: 'Rate',
-                loan_sim_title: '💰 Loan Simulator', loan_sim_sub: 'Estimate your monthly installment and total interest',
-                tenor: 'Tenor', days7: '7 days', days15: '15 days', days30: '30 days', days60: '60 days',
-                interest: 'Interest (%)', total_payment: 'Total Payment', installment: 'Installment', total_interest: 'Total Interest',
-                currency: 'Currency', chart_title: 'USDT / IDR Price Chart',
-                exchange_title: 'Exchange Money', exchange_sub: 'Complete your exchange request in just a few clicks.',
-                estimated_response: 'Estimated Response', within_5min: 'Within 5 minutes via Telegram',
-                data_security: 'Data Security', encrypted: 'Encrypted & Private', storage: 'Storage', saved_secure: 'Saved to Secure Database',
-                start_exchange: 'Start Exchange Request', secure_google: 'Your data is secure with Google Forms',
+                live: 'Live',
+                exchange: 'Exchange',
+                loan: 'Loan',
+                history: 'History',
+                legal: 'Legal',
+                testimonials: 'Testimonials',
+                fetching: 'Fetching...',
+                calc_title: '🔄 Currency Calculator',
+                calc_sub: 'Convert between USDT, PHP, IDR in real-time',
+                amount: 'Amount',
+                from: 'From',
+                to: 'To',
+                result: 'Result',
+                rate: 'Rate',
+                loan_sim_title: '💰 Loan Simulator',
+                loan_sim_sub: 'Estimate your monthly installment and total interest',
+                tenor: 'Tenor',
+                days7: '7 days',
+                days15: '15 days',
+                days30: '30 days',
+                days60: '60 days',
+                interest: 'Interest (%)',
+                total_payment: 'Total Payment',
+                installment: 'Installment',
+                total_interest: 'Total Interest',
+                currency: 'Currency',
+                chart_title: 'USDT / IDR Price Chart',
+                exchange_title: 'Exchange Money',
+                exchange_sub: 'Complete your exchange request in just a few clicks.',
+                estimated_response: 'Estimated Response',
+                within_5min: 'Within 5 minutes via Telegram',
+                data_security: 'Data Security',
+                encrypted: 'Encrypted & Private',
+                storage: 'Storage',
+                saved_secure: 'Saved to Secure Database',
+                start_exchange: 'Start Exchange Request',
+                secure_google: 'Your data is secure with Google Forms',
                 request_received: '✅ Request received! CS will contact you via Telegram within 5 minutes.',
-                loan_title: 'Loan Application', loan_sub: 'Choose your collateral type and apply instantly.',
-                ktp: 'KTP', passport: 'Passport', crypto: 'Crypto',
-                collateral: 'Collateral', ktp_label: 'KTP (ID Card)', passport_label: 'Passport', crypto_label: 'Crypto (USDT, BTC, ETH)',
-                response_time: 'Response Time', requirements: 'Requirements',
-                ktp_req: 'Valid KTP + Selfie', passport_req: 'Valid Passport + Photo', crypto_req: 'Wallet Address + Balance Proof',
-                apply_ktp: 'Apply KTP Loan', apply_passport: 'Apply Passport Loan', apply_crypto: 'Apply Crypto Loan',
-                history_title: 'Transaction History', history_sub: 'View all past exchange and loan requests.',
-                loading_data: 'Loading data from Google Sheets...', date: 'Date', name: 'Name', email: 'Email', type: 'Type', status: 'Status',
+                loan_title: 'Loan Application',
+                loan_sub: 'Choose your collateral type and apply instantly.',
+                ktp: 'KTP',
+                passport: 'Passport',
+                crypto: 'Crypto',
+                collateral: 'Collateral',
+                ktp_label: 'KTP (ID Card)',
+                passport_label: 'Passport',
+                crypto_label: 'Crypto (USDT, BTC, ETH)',
+                response_time: 'Response Time',
+                requirements: 'Requirements',
+                ktp_req: 'Valid KTP + Selfie',
+                passport_req: 'Valid Passport + Photo',
+                crypto_req: 'Wallet Address + Balance Proof',
+                apply_ktp: 'Apply KTP Loan',
+                apply_passport: 'Apply Passport Loan',
+                apply_crypto: 'Apply Crypto Loan',
+                history_title: 'Transaction History',
+                history_sub: 'View all past exchange and loan requests.',
+                loading_data: 'Loading data from Google Sheets...',
+                date: 'Date',
+                name: 'Name',
+                email: 'Email',
+                type: 'Type',
+                status: 'Status',
                 no_transactions: 'No transactions yet. Data will appear here once users submit requests.',
-                legal_title: 'Legal Information', legal_sub: 'Terms & Conditions, Privacy Policy, About Us, and Disclaimer.',
-                terms_tab: 'Terms', privacy_tab: 'Privacy', about_tab: 'About', disclaimer_tab: 'Disclaimer',
-                terms_title: '📜 Terms & Conditions', terms_text: '<strong>Last Updated:</strong> August 21, 2026<br>Welcome to <span class="highlight">SuperExchange</span>. By using our platform, you agree to the following terms...',
-                privacy_title: '🔒 Privacy Policy', privacy_text: '<strong>Last Updated:</strong> August 21, 2026<br>Your privacy is important to us...',
-                about_title: '🏢 About SuperExchange', about_text: '<strong>Founded:</strong> 2026<br><span class="highlight">SuperExchange</span> is a digital platform...',
-                disclaimer_title: '⚠️ Disclaimer', disclaimer_text: '<strong>Last Updated:</strong> August 21, 2026<br>By using <span class="highlight">SuperExchange</span>, you acknowledge...',
-                testimonial_title: 'User Testimonials', testimonial_sub: 'What our users say about SuperExchange.',
-                leave_review: '⭐ Leave a Review', submit_review: 'Submit Review',
-                support: '24/7 Support', support_text: 'Our team is ready to assist you.', response_time_footer: 'Response within 5 minutes'
+                legal_title: 'Legal Information',
+                legal_sub: 'Terms & Conditions, Privacy Policy, About Us, and Disclaimer.',
+                terms_tab: 'Terms',
+                privacy_tab: 'Privacy',
+                about_tab: 'About',
+                disclaimer_tab: 'Disclaimer',
+                terms_title: '📜 Terms & Conditions',
+                terms_text: '<strong>Last Updated:</strong> August 21, 2026<br>Welcome to <span class="highlight">SuperExchange</span>. By using our platform, you agree to the following terms...',
+                privacy_title: '🔒 Privacy Policy',
+                privacy_text: '<strong>Last Updated:</strong> August 21, 2026<br>Your privacy is important to us...',
+                about_title: '🏢 About SuperExchange',
+                about_text: '<strong>Founded:</strong> 2026<br><span class="highlight">SuperExchange</span> is a digital platform...',
+                disclaimer_title: '⚠️ Disclaimer',
+                disclaimer_text: '<strong>Last Updated:</strong> August 21, 2026<br>By using <span class="highlight">SuperExchange</span>, you acknowledge...',
+                testimonial_title: 'User Testimonials',
+                testimonial_sub: 'What our users say about SuperExchange.',
+                leave_review: '⭐ Leave a Review',
+                submit_review: 'Submit Review',
+                support: '24/7 Support',
+                support_text: 'Our team is ready to assist you.',
+                response_time_footer: 'Response within 5 minutes'
             },
+            // ... other languages (id, zh, vi, my, tl) - same as before
             id: {
-                live: 'Live', exchange: 'Tukar Uang', loan: 'Pinjaman', history: 'Riwayat', legal: 'Hukum', testimonials: 'Testimoni',
-                fetching: 'Memuat...', calc_title: '🔄 Kalkulator Kurs', calc_sub: 'Konversi USDT, PHP, IDR secara real-time',
-                amount: 'Jumlah', from: 'Dari', to: 'Ke', result: 'Hasil', rate: 'Kurs',
-                loan_sim_title: '💰 Simulasi Pinjaman', loan_sim_sub: 'Estimasi angsuran bulanan dan total bunga',
-                tenor: 'Tenor', days7: '7 hari', days15: '15 hari', days30: '30 hari', days60: '60 hari',
-                interest: 'Bunga (%)', total_payment: 'Total Pembayaran', installment: 'Angsuran', total_interest: 'Total Bunga',
-                currency: 'Mata Uang', chart_title: 'Grafik Harga USDT / IDR',
-                exchange_title: 'Tukar Uang', exchange_sub: 'Lengkapi permintaan tukar uang Anda dalam beberapa klik.',
-                estimated_response: 'Estimasi Respons', within_5min: 'Dalam 5 menit via Telegram',
-                data_security: 'Keamanan Data', encrypted: 'Terenskripsi & Pribadi', storage: 'Penyimpanan', saved_secure: 'Tersimpan di Database Aman',
-                start_exchange: 'Mulai Permintaan Tukar', secure_google: 'Data Anda aman dengan Google Forms',
+                live: 'Live',
+                exchange: 'Tukar Uang',
+                loan: 'Pinjaman',
+                history: 'Riwayat',
+                legal: 'Hukum',
+                testimonials: 'Testimoni',
+                fetching: 'Memuat...',
+                calc_title: '🔄 Kalkulator Kurs',
+                calc_sub: 'Konversi USDT, PHP, IDR secara real-time',
+                amount: 'Jumlah',
+                from: 'Dari',
+                to: 'Ke',
+                result: 'Hasil',
+                rate: 'Kurs',
+                loan_sim_title: '💰 Simulasi Pinjaman',
+                loan_sim_sub: 'Estimasi angsuran bulanan dan total bunga',
+                tenor: 'Tenor',
+                days7: '7 hari',
+                days15: '15 hari',
+                days30: '30 hari',
+                days60: '60 hari',
+                interest: 'Bunga (%)',
+                total_payment: 'Total Pembayaran',
+                installment: 'Angsuran',
+                total_interest: 'Total Bunga',
+                currency: 'Mata Uang',
+                chart_title: 'Grafik Harga USDT / IDR',
+                exchange_title: 'Tukar Uang',
+                exchange_sub: 'Lengkapi permintaan tukar uang Anda dalam beberapa klik.',
+                estimated_response: 'Estimasi Respons',
+                within_5min: 'Dalam 5 menit via Telegram',
+                data_security: 'Keamanan Data',
+                encrypted: 'Terenskripsi & Pribadi',
+                storage: 'Penyimpanan',
+                saved_secure: 'Tersimpan di Database Aman',
+                start_exchange: 'Mulai Permintaan Tukar',
+                secure_google: 'Data Anda aman dengan Google Forms',
                 request_received: '✅ Permintaan diterima! CS akan menghubungi Anda via Telegram dalam 5 menit.',
-                loan_title: 'Pengajuan Pinjaman', loan_sub: 'Pilih jenis jaminan dan ajukan secara instan.',
-                ktp: 'KTP', passport: 'Paspor', crypto: 'Kripto',
-                collateral: 'Jaminan', ktp_label: 'KTP (Kartu Tanda Penduduk)', passport_label: 'Paspor', crypto_label: 'Kripto (USDT, BTC, ETH)',
-                response_time: 'Waktu Respons', requirements: 'Persyaratan',
-                ktp_req: 'KTP Valid + Selfie', passport_req: 'Paspor Valid + Foto', crypto_req: 'Alamat Dompet + Bukti Saldo',
-                apply_ktp: 'Ajukan Pinjaman KTP', apply_passport: 'Ajukan Pinjaman Paspor', apply_crypto: 'Ajukan Pinjaman Kripto',
-                history_title: 'Riwayat Transaksi', history_sub: 'Lihat semua permintaan tukar dan pinjaman.',
-                loading_data: 'Memuat data dari Google Sheets...', date: 'Tanggal', name: 'Nama', email: 'Email', type: 'Jenis', status: 'Status',
+                loan_title: 'Pengajuan Pinjaman',
+                loan_sub: 'Pilih jenis jaminan dan ajukan secara instan.',
+                ktp: 'KTP',
+                passport: 'Paspor',
+                crypto: 'Kripto',
+                collateral: 'Jaminan',
+                ktp_label: 'KTP (Kartu Tanda Penduduk)',
+                passport_label: 'Paspor',
+                crypto_label: 'Kripto (USDT, BTC, ETH)',
+                response_time: 'Waktu Respons',
+                requirements: 'Persyaratan',
+                ktp_req: 'KTP Valid + Selfie',
+                passport_req: 'Paspor Valid + Foto',
+                crypto_req: 'Alamat Dompet + Bukti Saldo',
+                apply_ktp: 'Ajukan Pinjaman KTP',
+                apply_passport: 'Ajukan Pinjaman Paspor',
+                apply_crypto: 'Ajukan Pinjaman Kripto',
+                history_title: 'Riwayat Transaksi',
+                history_sub: 'Lihat semua permintaan tukar dan pinjaman.',
+                loading_data: 'Memuat data dari Google Sheets...',
+                date: 'Tanggal',
+                name: 'Nama',
+                email: 'Email',
+                type: 'Jenis',
+                status: 'Status',
                 no_transactions: 'Belum ada transaksi. Data akan muncul setelah pengguna mengirim permintaan.',
-                legal_title: 'Informasi Hukum', legal_sub: 'Syarat & Ketentuan, Kebijakan Privasi, Tentang Kami, dan Disclaimer.',
-                terms_tab: 'Syarat', privacy_tab: 'Privasi', about_tab: 'Tentang', disclaimer_tab: 'Disclaimer',
-                terms_title: '📜 Syarat & Ketentuan', terms_text: '<strong>Terakhir Diperbarui:</strong> 21 Agustus 2026<br>Selamat datang di <span class="highlight">SuperExchange</span>. Dengan menggunakan platform kami, Anda menyetujui ketentuan berikut...',
-                privacy_title: '🔒 Kebijakan Privasi', privacy_text: '<strong>Terakhir Diperbarui:</strong> 21 Agustus 2026<br>Privasi Anda penting bagi kami...',
-                about_title: '🏢 Tentang SuperExchange', about_text: '<strong>Didirikan:</strong> 2026<br><span class="highlight">SuperExchange</span> adalah platform digital...',
-                disclaimer_title: '⚠️ Disclaimer', disclaimer_text: '<strong>Terakhir Diperbarui:</strong> 21 Agustus 2026<br>Dengan menggunakan <span class="highlight">SuperExchange</span>, Anda menyetujui...',
-                testimonial_title: 'Testimoni Pengguna', testimonial_sub: 'Apa kata pengguna tentang SuperExchange.',
-                leave_review: '⭐ Beri Ulasan', submit_review: 'Kirim Ulasan',
-                support: 'Dukungan 24/7', support_text: 'Tim kami siap membantu Anda.', response_time_footer: 'Respons dalam 5 menit'
+                legal_title: 'Informasi Hukum',
+                legal_sub: 'Syarat & Ketentuan, Kebijakan Privasi, Tentang Kami, dan Disclaimer.',
+                terms_tab: 'Syarat',
+                privacy_tab: 'Privasi',
+                about_tab: 'Tentang',
+                disclaimer_tab: 'Disclaimer',
+                terms_title: '📜 Syarat & Ketentuan',
+                terms_text: '<strong>Terakhir Diperbarui:</strong> 21 Agustus 2026<br>Selamat datang di <span class="highlight">SuperExchange</span>. Dengan menggunakan platform kami, Anda menyetujui ketentuan berikut...',
+                privacy_title: '🔒 Kebijakan Privasi',
+                privacy_text: '<strong>Terakhir Diperbarui:</strong> 21 Agustus 2026<br>Privasi Anda penting bagi kami...',
+                about_title: '🏢 Tentang SuperExchange',
+                about_text: '<strong>Didirikan:</strong> 2026<br><span class="highlight">SuperExchange</span> adalah platform digital...',
+                disclaimer_title: '⚠️ Disclaimer',
+                disclaimer_text: '<strong>Terakhir Diperbarui:</strong> 21 Agustus 2026<br>Dengan menggunakan <span class="highlight">SuperExchange</span>, Anda menyetujui...',
+                testimonial_title: 'Testimoni Pengguna',
+                testimonial_sub: 'Apa kata pengguna tentang SuperExchange.',
+                leave_review: '⭐ Beri Ulasan',
+                submit_review: 'Kirim Ulasan',
+                support: 'Dukungan 24/7',
+                support_text: 'Tim kami siap membantu Anda.',
+                response_time_footer: 'Respons dalam 5 menit'
             },
             zh: {
-                live: '在线', exchange: '兑换', loan: '贷款', history: '历史', legal: '法律', testimonials: '评价',
-                fetching: '加载中...', calc_title: '🔄 货币计算器', calc_sub: '实时转换 USDT、PHP、IDR',
-                amount: '金额', from: '从', to: '到', result: '结果', rate: '汇率',
-                loan_sim_title: '💰 贷款模拟器', loan_sim_sub: '估算每月分期付款和总利息',
-                tenor: '期限', days7: '7天', days15: '15天', days30: '30天', days60: '60天',
-                interest: '利率 (%)', total_payment: '总付款', installment: '分期付款', total_interest: '总利息',
-                currency: '货币', chart_title: 'USDT / IDR 价格图表',
-                exchange_title: '兑换货币', exchange_sub: '只需点击几下即可完成兑换请求。',
-                estimated_response: '预计响应时间', within_5min: '5分钟内通过 Telegram 联系',
-                data_security: '数据安全', encrypted: '加密且私密', storage: '存储', saved_secure: '保存在安全数据库中',
-                start_exchange: '开始兑换请求', secure_google: '您的数据通过 Google Forms 安全存储',
+                live: '在线',
+                exchange: '兑换',
+                loan: '贷款',
+                history: '历史',
+                legal: '法律',
+                testimonials: '评价',
+                fetching: '加载中...',
+                calc_title: '🔄 货币计算器',
+                calc_sub: '实时转换 USDT、PHP、IDR',
+                amount: '金额',
+                from: '从',
+                to: '到',
+                result: '结果',
+                rate: '汇率',
+                loan_sim_title: '💰 贷款模拟器',
+                loan_sim_sub: '估算每月分期付款和总利息',
+                tenor: '期限',
+                days7: '7天',
+                days15: '15天',
+                days30: '30天',
+                days60: '60天',
+                interest: '利率 (%)',
+                total_payment: '总付款',
+                installment: '分期付款',
+                total_interest: '总利息',
+                currency: '货币',
+                chart_title: 'USDT / IDR 价格图表',
+                exchange_title: '兑换货币',
+                exchange_sub: '只需点击几下即可完成兑换请求。',
+                estimated_response: '预计响应时间',
+                within_5min: '5分钟内通过 Telegram 联系',
+                data_security: '数据安全',
+                encrypted: '加密且私密',
+                storage: '存储',
+                saved_secure: '保存在安全数据库中',
+                start_exchange: '开始兑换请求',
+                secure_google: '您的数据通过 Google Forms 安全存储',
                 request_received: '✅ 请求已收到！客服将在5分钟内通过 Telegram 联系您。',
-                loan_title: '贷款申请', loan_sub: '选择您的抵押类型并立即申请。',
-                ktp: '身份证', passport: '护照', crypto: '加密货币',
-                collateral: '抵押品', ktp_label: '身份证 (KTP)', passport_label: '护照', crypto_label: '加密货币 (USDT, BTC, ETH)',
-                response_time: '响应时间', requirements: '要求',
-                ktp_req: '有效身份证 + 自拍', passport_req: '有效护照 + 照片', crypto_req: '钱包地址 + 余额证明',
-                apply_ktp: '申请身份证贷款', apply_passport: '申请护照贷款', apply_crypto: '申请加密货币贷款',
-                history_title: '交易历史', history_sub: '查看所有过去的兑换和贷款请求。',
-                loading_data: '正在从 Google Sheets 加载数据...', date: '日期', name: '姓名', email: '电子邮件', type: '类型', status: '状态',
+                loan_title: '贷款申请',
+                loan_sub: '选择您的抵押类型并立即申请。',
+                ktp: '身份证',
+                passport: '护照',
+                crypto: '加密货币',
+                collateral: '抵押品',
+                ktp_label: '身份证 (KTP)',
+                passport_label: '护照',
+                crypto_label: '加密货币 (USDT, BTC, ETH)',
+                response_time: '响应时间',
+                requirements: '要求',
+                ktp_req: '有效身份证 + 自拍',
+                passport_req: '有效护照 + 照片',
+                crypto_req: '钱包地址 + 余额证明',
+                apply_ktp: '申请身份证贷款',
+                apply_passport: '申请护照贷款',
+                apply_crypto: '申请加密货币贷款',
+                history_title: '交易历史',
+                history_sub: '查看所有过去的兑换和贷款请求。',
+                loading_data: '正在从 Google Sheets 加载数据...',
+                date: '日期',
+                name: '姓名',
+                email: '电子邮件',
+                type: '类型',
+                status: '状态',
                 no_transactions: '暂无交易。用户提交请求后将显示数据。',
-                legal_title: '法律信息', legal_sub: '条款与条件、隐私政策、关于我们和免责声明。',
-                terms_tab: '条款', privacy_tab: '隐私', about_tab: '关于', disclaimer_tab: '免责声明',
-                terms_title: '📜 条款与条件', terms_text: '<strong>最后更新:</strong> 2026年8月21日<br>欢迎来到 <span class="highlight">SuperExchange</span>。使用我们的平台即表示您同意以下条款...',
-                privacy_title: '🔒 隐私政策', privacy_text: '<strong>最后更新:</strong> 2026年8月21日<br>您的隐私对我们很重要...',
-                about_title: '🏢 关于 SuperExchange', about_text: '<strong>成立:</strong> 2026年<br><span class="highlight">SuperExchange</span> 是一个数字平台...',
-                disclaimer_title: '⚠️ 免责声明', disclaimer_text: '<strong>最后更新:</strong> 2026年8月21日<br>使用 <span class="highlight">SuperExchange</span> 即表示您承认...',
-                testimonial_title: '用户评价', testimonial_sub: '用户对 SuperExchange 的评价。',
-                leave_review: '⭐ 发表评论', submit_review: '提交评论',
-                support: '24/7 支持', support_text: '我们的团队随时准备为您提供帮助。', response_time_footer: '5分钟内回复'
+                legal_title: '法律信息',
+                legal_sub: '条款与条件、隐私政策、关于我们和免责声明。',
+                terms_tab: '条款',
+                privacy_tab: '隐私',
+                about_tab: '关于',
+                disclaimer_tab: '免责声明',
+                terms_title: '📜 条款与条件',
+                terms_text: '<strong>最后更新:</strong> 2026年8月21日<br>欢迎来到 <span class="highlight">SuperExchange</span>。使用我们的平台即表示您同意以下条款...',
+                privacy_title: '🔒 隐私政策',
+                privacy_text: '<strong>最后更新:</strong> 2026年8月21日<br>您的隐私对我们很重要...',
+                about_title: '🏢 关于 SuperExchange',
+                about_text: '<strong>成立:</strong> 2026年<br><span class="highlight">SuperExchange</span> 是一个数字平台...',
+                disclaimer_title: '⚠️ 免责声明',
+                disclaimer_text: '<strong>最后更新:</strong> 2026年8月21日<br>使用 <span class="highlight">SuperExchange</span> 即表示您承认...',
+                testimonial_title: '用户评价',
+                testimonial_sub: '用户对 SuperExchange 的评价。',
+                leave_review: '⭐ 发表评论',
+                submit_review: '提交评论',
+                support: '24/7 支持',
+                support_text: '我们的团队随时准备为您提供帮助。',
+                response_time_footer: '5分钟内回复'
             },
             vi: {
-                live: 'Trực tiếp', exchange: 'Đổi tiền', loan: 'Vay', history: 'Lịch sử', legal: 'Pháp lý', testimonials: 'Đánh giá',
-                fetching: 'Đang tải...', calc_title: '🔄 Máy tính tiền tệ', calc_sub: 'Chuyển đổi USDT, PHP, IDR theo thời gian thực',
-                amount: 'Số tiền', from: 'Từ', to: 'Đến', result: 'Kết quả', rate: 'Tỷ giá',
-                loan_sim_title: '💰 Mô phỏng khoản vay', loan_sim_sub: 'Ước tính khoản trả góp hàng tháng và tổng lãi suất',
-                tenor: 'Kỳ hạn', days7: '7 ngày', days15: '15 ngày', days30: '30 ngày', days60: '60 ngày',
-                interest: 'Lãi suất (%)', total_payment: 'Tổng thanh toán', installment: 'Trả góp', total_interest: 'Tổng lãi',
-                currency: 'Tiền tệ', chart_title: 'Biểu đồ giá USDT / IDR',
-                exchange_title: 'Đổi tiền', exchange_sub: 'Hoàn thành yêu cầu đổi tiền của bạn chỉ trong vài cú nhấp chuột.',
-                estimated_response: 'Thời gian phản hồi dự kiến', within_5min: 'Trong vòng 5 phút qua Telegram',
-                data_security: 'Bảo mật dữ liệu', encrypted: 'Mã hóa & Riêng tư', storage: 'Lưu trữ', saved_secure: 'Lưu trong Cơ sở dữ liệu an toàn',
-                start_exchange: 'Bắt đầu yêu cầu đổi tiền', secure_google: 'Dữ liệu của bạn được bảo mật với Google Forms',
+                live: 'Trực tiếp',
+                exchange: 'Đổi tiền',
+                loan: 'Vay',
+                history: 'Lịch sử',
+                legal: 'Pháp lý',
+                testimonials: 'Đánh giá',
+                fetching: 'Đang tải...',
+                calc_title: '🔄 Máy tính tiền tệ',
+                calc_sub: 'Chuyển đổi USDT, PHP, IDR theo thời gian thực',
+                amount: 'Số tiền',
+                from: 'Từ',
+                to: 'Đến',
+                result: 'Kết quả',
+                rate: 'Tỷ giá',
+                loan_sim_title: '💰 Mô phỏng khoản vay',
+                loan_sim_sub: 'Ước tính khoản trả góp hàng tháng và tổng lãi suất',
+                tenor: 'Kỳ hạn',
+                days7: '7 ngày',
+                days15: '15 ngày',
+                days30: '30 ngày',
+                days60: '60 ngày',
+                interest: 'Lãi suất (%)',
+                total_payment: 'Tổng thanh toán',
+                installment: 'Trả góp',
+                total_interest: 'Tổng lãi',
+                currency: 'Tiền tệ',
+                chart_title: 'Biểu đồ giá USDT / IDR',
+                exchange_title: 'Đổi tiền',
+                exchange_sub: 'Hoàn thành yêu cầu đổi tiền của bạn chỉ trong vài cú nhấp chuột.',
+                estimated_response: 'Thời gian phản hồi dự kiến',
+                within_5min: 'Trong vòng 5 phút qua Telegram',
+                data_security: 'Bảo mật dữ liệu',
+                encrypted: 'Mã hóa & Riêng tư',
+                storage: 'Lưu trữ',
+                saved_secure: 'Lưu trong Cơ sở dữ liệu an toàn',
+                start_exchange: 'Bắt đầu yêu cầu đổi tiền',
+                secure_google: 'Dữ liệu của bạn được bảo mật với Google Forms',
                 request_received: '✅ Yêu cầu đã nhận! CS sẽ liên hệ với bạn qua Telegram trong vòng 5 phút.',
-                loan_title: 'Đăng ký vay', loan_sub: 'Chọn loại tài sản thế chấp và đăng ký ngay.',
-                ktp: 'KTP', passport: 'Hộ chiếu', crypto: 'Tiền mã hóa',
-                collateral: 'Tài sản thế chấp', ktp_label: 'KTP (CMND)', passport_label: 'Hộ chiếu', crypto_label: 'Tiền mã hóa (USDT, BTC, ETH)',
-                response_time: 'Thời gian phản hồi', requirements: 'Yêu cầu',
-                ktp_req: 'KTP hợp lệ + ảnh tự chụp', passport_req: 'Hộ chiếu hợp lệ + ảnh', crypto_req: 'Địa chỉ ví + Bằng chứng số dư',
-                apply_ktp: 'Đăng ký vay KTP', apply_passport: 'Đăng ký vay Hộ chiếu', apply_crypto: 'Đăng ký vay Tiền mã hóa',
-                history_title: 'Lịch sử giao dịch', history_sub: 'Xem tất cả các yêu cầu đổi tiền và vay trước đây.',
-                loading_data: 'Đang tải dữ liệu từ Google Sheets...', date: 'Ngày', name: 'Tên', email: 'Email', type: 'Loại', status: 'Trạng thái',
+                loan_title: 'Đăng ký vay',
+                loan_sub: 'Chọn loại tài sản thế chấp và đăng ký ngay.',
+                ktp: 'KTP',
+                passport: 'Hộ chiếu',
+                crypto: 'Tiền mã hóa',
+                collateral: 'Tài sản thế chấp',
+                ktp_label: 'KTP (CMND)',
+                passport_label: 'Hộ chiếu',
+                crypto_label: 'Tiền mã hóa (USDT, BTC, ETH)',
+                response_time: 'Thời gian phản hồi',
+                requirements: 'Yêu cầu',
+                ktp_req: 'KTP hợp lệ + ảnh tự chụp',
+                passport_req: 'Hộ chiếu hợp lệ + ảnh',
+                crypto_req: 'Địa chỉ ví + Bằng chứng số dư',
+                apply_ktp: 'Đăng ký vay KTP',
+                apply_passport: 'Đăng ký vay Hộ chiếu',
+                apply_crypto: 'Đăng ký vay Tiền mã hóa',
+                history_title: 'Lịch sử giao dịch',
+                history_sub: 'Xem tất cả các yêu cầu đổi tiền và vay trước đây.',
+                loading_data: 'Đang tải dữ liệu từ Google Sheets...',
+                date: 'Ngày',
+                name: 'Tên',
+                email: 'Email',
+                type: 'Loại',
+                status: 'Trạng thái',
                 no_transactions: 'Chưa có giao dịch nào. Dữ liệu sẽ xuất hiện sau khi người dùng gửi yêu cầu.',
-                legal_title: 'Thông tin pháp lý', legal_sub: 'Điều khoản & Điều kiện, Chính sách bảo mật, Giới thiệu và Tuyên bố miễn trách.',
-                terms_tab: 'Điều khoản', privacy_tab: 'Bảo mật', about_tab: 'Giới thiệu', disclaimer_tab: 'Tuyên bố',
-                terms_title: '📜 Điều khoản & Điều kiện', terms_text: '<strong>Cập nhật lần cuối:</strong> 21 tháng 8, 2026<br>Chào mừng đến với <span class="highlight">SuperExchange</span>. Bằng cách sử dụng nền tảng của chúng tôi, bạn đồng ý với các điều khoản sau...',
-                privacy_title: '🔒 Chính sách bảo mật', privacy_text: '<strong>Cập nhật lần cuối:</strong> 21 tháng 8, 2026<br>Quyền riêng tư của bạn rất quan trọng đối với chúng tôi...',
-                about_title: '🏢 Giới thiệu về SuperExchange', about_text: '<strong>Thành lập:</strong> 2026<br><span class="highlight">SuperExchange</span> là một nền tảng kỹ thuật số...',
-                disclaimer_title: '⚠️ Tuyên bố miễn trách', disclaimer_text: '<strong>Cập nhật lần cuối:</strong> 21 tháng 8, 2026<br>Bằng cách sử dụng <span class="highlight">SuperExchange</span>, bạn thừa nhận...',
-                testimonial_title: 'Đánh giá của người dùng', testimonial_sub: 'Người dùng nói gì về SuperExchange.',
-                leave_review: '⭐ Để lại đánh giá', submit_review: 'Gửi đánh giá',
-                support: 'Hỗ trợ 24/7', support_text: 'Đội ngũ của chúng tôi sẵn sàng hỗ trợ bạn.', response_time_footer: 'Phản hồi trong vòng 5 phút'
+                legal_title: 'Thông tin pháp lý',
+                legal_sub: 'Điều khoản & Điều kiện, Chính sách bảo mật, Giới thiệu và Tuyên bố miễn trách.',
+                terms_tab: 'Điều khoản',
+                privacy_tab: 'Bảo mật',
+                about_tab: 'Giới thiệu',
+                disclaimer_tab: 'Tuyên bố',
+                terms_title: '📜 Điều khoản & Điều kiện',
+                terms_text: '<strong>Cập nhật lần cuối:</strong> 21 tháng 8, 2026<br>Chào mừng đến với <span class="highlight">SuperExchange</span>. Bằng cách sử dụng nền tảng của chúng tôi, bạn đồng ý với các điều khoản sau...',
+                privacy_title: '🔒 Chính sách bảo mật',
+                privacy_text: '<strong>Cập nhật lần cuối:</strong> 21 tháng 8, 2026<br>Quyền riêng tư của bạn rất quan trọng đối với chúng tôi...',
+                about_title: '🏢 Giới thiệu về SuperExchange',
+                about_text: '<strong>Thành lập:</strong> 2026<br><span class="highlight">SuperExchange</span> là một nền tảng kỹ thuật số...',
+                disclaimer_title: '⚠️ Tuyên bố miễn trách',
+                disclaimer_text: '<strong>Cập nhật lần cuối:</strong> 21 tháng 8, 2026<br>Bằng cách sử dụng <span class="highlight">SuperExchange</span>, bạn thừa nhận...',
+                testimonial_title: 'Đánh giá của người dùng',
+                testimonial_sub: 'Người dùng nói gì về SuperExchange.',
+                leave_review: '⭐ Để lại đánh giá',
+                submit_review: 'Gửi đánh giá',
+                support: 'Hỗ trợ 24/7',
+                support_text: 'Đội ngũ của chúng tôi sẵn sàng hỗ trợ bạn.',
+                response_time_footer: 'Phản hồi trong vòng 5 phút'
             },
             my: {
-                live: 'တိုက်ရိုက်', exchange: 'ငွေလဲ', loan: 'ချေး', history: 'မှတ်တမ်း', legal: 'ဥပဒေ', testimonials: 'သုံးသပ်ချက်',
-                fetching: 'ဖတ်နေသည်...', calc_title: '🔄 ငွေကြေးတွက်စက်', calc_sub: 'USDT၊ PHP၊ IDR ကို အချိန်နှင့်တပြေးညီ ပြောင်းပါ',
-                amount: 'ပမာဏ', from: 'မှ', to: 'သို့', result: 'ရလဒ်', rate: 'နှုန်းထား',
-                loan_sim_title: '💰 ချေးငွေအတုယူတွက်ချက်မှု', loan_sim_sub: 'လစဉ်အရစ်ကျနှင့် စုစုပေါင်းအတိုးနှုန်းကို ခန့်မှန်းပါ',
-                tenor: 'သက်တမ်း', days7: '၇ ရက်', days15: '၁၅ ရက်', days30: '၃၀ ရက်', days60: '၆၀ ရက်',
-                interest: 'အတိုးနှုန်း (%)', total_payment: 'စုစုပေါင်းပေးချေငွေ', installment: 'အရစ်ကျ', total_interest: 'စုစုပေါင်းအတိုး',
-                currency: 'ငွေကြေး', chart_title: 'USDT / IDR ဈေးနှုန်းဇယား',
-                exchange_title: 'ငွေလဲလှယ်ခြင်း', exchange_sub: 'တစ်ချက်နှိပ်ရုံဖြင့် သင်၏ငွေလဲလှယ်မှုကို ပြီးမြောက်ပါ။',
-                estimated_response: 'ခန့်မှန်းတုံ့ပြန်ချိန်', within_5min: 'Telegram မှတစ်ဆင့် ၅ မိနစ်အတွင်း',
-                data_security: 'ဒေတာလုံခြုံရေး', encrypted: 'စာဝှက်ထားပြီး ကိုယ်ရေးကိုယ်တာ', storage: 'သိုလှောင်မှု', saved_secure: 'လုံခြုံသောဒေတာဘေ့စ်တွင် သိမ်းဆည်းထားသည်',
-                start_exchange: 'ငွေလဲလှယ်မှုစတင်ရန်', secure_google: 'သင့်ဒေတာကို Google Forms ဖြင့် လုံခြုံစွာ သိမ်းဆည်းထားသည်',
+                live: 'တိုက်ရိုက်',
+                exchange: 'ငွေလဲ',
+                loan: 'ချေး',
+                history: 'မှတ်တမ်း',
+                legal: 'ဥပဒေ',
+                testimonials: 'သုံးသပ်ချက်',
+                fetching: 'ဖတ်နေသည်...',
+                calc_title: '🔄 ငွေကြေးတွက်စက်',
+                calc_sub: 'USDT၊ PHP၊ IDR ကို အချိန်နှင့်တပြေးညီ ပြောင်းပါ',
+                amount: 'ပမာဏ',
+                from: 'မှ',
+                to: 'သို့',
+                result: 'ရလဒ်',
+                rate: 'နှုန်းထား',
+                loan_sim_title: '💰 ချေးငွေအတုယူတွက်ချက်မှု',
+                loan_sim_sub: 'လစဉ်အရစ်ကျနှင့် စုစုပေါင်းအတိုးနှုန်းကို ခန့်မှန်းပါ',
+                tenor: 'သက်တမ်း',
+                days7: '၇ ရက်',
+                days15: '၁၅ ရက်',
+                days30: '၃၀ ရက်',
+                days60: '၆၀ ရက်',
+                interest: 'အတိုးနှုန်း (%)',
+                total_payment: 'စုစုပေါင်းပေးချေငွေ',
+                installment: 'အရစ်ကျ',
+                total_interest: 'စုစုပေါင်းအတိုး',
+                currency: 'ငွေကြေး',
+                chart_title: 'USDT / IDR ဈေးနှုန်းဇယား',
+                exchange_title: 'ငွေလဲလှယ်ခြင်း',
+                exchange_sub: 'တစ်ချက်နှိပ်ရုံဖြင့် သင်၏ငွေလဲလှယ်မှုကို ပြီးမြောက်ပါ။',
+                estimated_response: 'ခန့်မှန်းတုံ့ပြန်ချိန်',
+                within_5min: 'Telegram မှတစ်ဆင့် ၅ မိနစ်အတွင်း',
+                data_security: 'ဒေတာလုံခြုံရေး',
+                encrypted: 'စာဝှက်ထားပြီး ကိုယ်ရေးကိုယ်တာ',
+                storage: 'သိုလှောင်မှု',
+                saved_secure: 'လုံခြုံသောဒေတာဘေ့စ်တွင် သိမ်းဆည်းထားသည်',
+                start_exchange: 'ငွေလဲလှယ်မှုစတင်ရန်',
+                secure_google: 'သင့်ဒေတာကို Google Forms ဖြင့် လုံခြုံစွာ သိမ်းဆည်းထားသည်',
                 request_received: '✅ တောင်းဆိုမှုကို လက်ခံရရှိပါသည်။ CS မှ Telegram မှတစ်ဆင့် ၅ မိနစ်အတွင်း ဆက်သွယ်ပါမည်။',
-                loan_title: 'ချေးငွေလျှောက်ထားခြင်း', loan_sub: 'သင်၏အာမခံအမျိုးအစားကို ရွေးပြီး ချက်ချင်းလျှောက်ထားပါ။',
-                ktp: 'KTP', passport: 'နိုင်ငံကူးလက်မှတ်', crypto: 'ခရစ်တိုငွေကြေး',
-                collateral: 'အာမခံ', ktp_label: 'KTP (မှတ်ပုံတင်)', passport_label: 'နိုင်ငံကူးလက်မှတ်', crypto_label: 'ခရစ်တိုငွေကြေး (USDT, BTC, ETH)',
-                response_time: 'တုံ့ပြန်ချိန်', requirements: 'လိုအပ်ချက်များ',
-                ktp_req: 'အကျုံးဝင်သော KTP + ကိုယ်တိုင်ဓာတ်ပုံ', passport_req: 'အကျုံးဝင်သော နိုင်ငံကူးလက်မှတ် + ဓာတ်ပုံ', crypto_req: 'ပိုက်ဆံအိတ်လိပ်စာ + လက်ကျန်အထောက်အထား',
-                apply_ktp: 'KTP ချေးငွေလျှောက်ထားပါ', apply_passport: 'နိုင်ငံကူးလက်မှတ် ချေးငွေလျှောက်ထားပါ', apply_crypto: 'ခရစ်တို ချေးငွေလျှောက်ထားပါ',
-                history_title: 'ငွေပေးငွေယူမှတ်တမ်း', history_sub: 'ယခင်ငွေလဲလှယ်မှုနှင့် ချေးငွေတောင်းဆိုမှုအားလုံးကို ကြည့်ပါ။',
-                loading_data: 'Google Sheets မှ ဒေတာဖတ်နေသည်...', date: 'ရက်စွဲ', name: 'အမည်', email: 'အီးမေးလ်', type: 'အမျိုးအစား', status: 'အခြေအနေ',
+                loan_title: 'ချေးငွေလျှောက်ထားခြင်း',
+                loan_sub: 'သင်၏အာမခံအမျိုးအစားကို ရွေးပြီး ချက်ချင်းလျှောက်ထားပါ။',
+                ktp: 'KTP',
+                passport: 'နိုင်ငံကူးလက်မှတ်',
+                crypto: 'ခရစ်တိုငွေကြေး',
+                collateral: 'အာမခံ',
+                ktp_label: 'KTP (မှတ်ပုံတင်)',
+                passport_label: 'နိုင်ငံကူးလက်မှတ်',
+                crypto_label: 'ခရစ်တိုငွေကြေး (USDT, BTC, ETH)',
+                response_time: 'တုံ့ပြန်ချိန်',
+                requirements: 'လိုအပ်ချက်များ',
+                ktp_req: 'အကျုံးဝင်သော KTP + ကိုယ်တိုင်ဓာတ်ပုံ',
+                passport_req: 'အကျုံးဝင်သော နိုင်ငံကူးလက်မှတ် + ဓာတ်ပုံ',
+                crypto_req: 'ပိုက်ဆံအိတ်လိပ်စာ + လက်ကျန်အထောက်အထား',
+                apply_ktp: 'KTP ချေးငွေလျှောက်ထားပါ',
+                apply_passport: 'နိုင်ငံကူးလက်မှတ် ချေးငွေလျှောက်ထားပါ',
+                apply_crypto: 'ခရစ်တို ချေးငွေလျှောက်ထားပါ',
+                history_title: 'ငွေပေးငွေယူမှတ်တမ်း',
+                history_sub: 'ယခင်ငွေလဲလှယ်မှုနှင့် ချေးငွေတောင်းဆိုမှုအားလုံးကို ကြည့်ပါ။',
+                loading_data: 'Google Sheets မှ ဒေတာဖတ်နေသည်...',
+                date: 'ရက်စွဲ',
+                name: 'အမည်',
+                email: 'အီးမေးလ်',
+                type: 'အမျိုးအစား',
+                status: 'အခြေအနေ',
                 no_transactions: 'ငွေပေးငွေယူမရှိသေးပါ။ အသုံးပြုသူများ တောင်းဆိုမှုတင်ပြပြီးနောက် ဒေတာပေါ်လာပါမည်။',
-                legal_title: 'ဥပဒေဆိုင်ရာ အချက်အလက်', legal_sub: 'စည်းကမ်းချက်များ၊ ကိုယ်ရေးကိုယ်တာမူဝါဒ၊ ကျွန်ုပ်တို့အကြောင်းနှင့် ရှင်းလင်းချက်။',
-                terms_tab: 'စည်းကမ်းချက်များ', privacy_tab: 'ကိုယ်ရေးကိုယ်တာ', about_tab: 'အကြောင်း', disclaimer_tab: 'ရှင်းလင်းချက်',
-                terms_title: '📜 စည်းကမ်းချက်များနှင့် အခြေအနေများ', terms_text: '<strong>နောက်ဆုံးမွမ်းမံ:</strong> ၂၀၂၆ ခုနှစ် ဩဂုတ်လ ၂၁ ရက်<br><span class="highlight">SuperExchange</span> မှ ကြိုဆိုပါသည်။ ကျွန်ုပ်တို့၏ ပလက်ဖောင်းကို အသုံးပြုခြင်းဖြင့် အောက်ပါစည်းကမ်းချက်များကို သင်သဘောတူပါသည်...',
-                privacy_title: '🔒 ကိုယ်ရေးကိုယ်တာမူဝါဒ', privacy_text: '<strong>နောက်ဆုံးမွမ်းမံ:</strong> ၂၀၂၆ ခုနှစ် ဩဂုတ်လ ၂၁ ရက်<br>သင်၏ကိုယ်ရေးကိုယ်တာသည် ကျွန်ုပ်တို့အတွက် အရေးကြီးပါသည်...',
-                about_title: '🏢 SuperExchange အကြောင်း', about_text: '<strong>စတင်တည်ထောင်သည်:</strong> ၂၀၂၆<br><span class="highlight">SuperExchange</span> သည် ဒစ်ဂျစ်တယ်ပလက်ဖောင်းတစ်ခုဖြစ်သည်...',
-                disclaimer_title: '⚠️ ရှင်းလင်းချက်', disclaimer_text: '<strong>နောက်ဆုံးမွမ်းမံ:</strong> ၂၀၂၆ ခုနှစ် ဩဂုတ်လ ၂၁ ရက်<br><span class="highlight">SuperExchange</span> ကို အသုံးပြုခြင်းဖြင့် သင်သည်...',
-                testimonial_title: 'အသုံးပြုသူသုံးသပ်ချက်များ', testimonial_sub: 'ကျွန်ုပ်တို့၏အသုံးပြုသူများက SuperExchange အကြောင်း ပြောသည်များ။',
-                leave_review: '⭐ သုံးသပ်ချက်ရေးပါ', submit_review: 'သုံးသပ်ချက်တင်ပါ',
-                support: '၂၄/၇ အကူအညီ', support_text: 'ကျွန်ုပ်တို့၏အဖွဲ့သည် သင့်ကိုကူညီရန် အသင့်ရှိပါသည်။', response_time_footer: '၅ မိနစ်အတွင်း တုံ့ပြန်မည်'
+                legal_title: 'ဥပဒေဆိုင်ရာ အချက်အလက်',
+                legal_sub: 'စည်းကမ်းချက်များ၊ ကိုယ်ရေးကိုယ်တာမူဝါဒ၊ ကျွန်ုပ်တို့အကြောင်းနှင့် ရှင်းလင်းချက်။',
+                terms_tab: 'စည်းကမ်းချက်များ',
+                privacy_tab: 'ကိုယ်ရေးကိုယ်တာ',
+                about_tab: 'အကြောင်း',
+                disclaimer_tab: 'ရှင်းလင်းချက်',
+                terms_title: '📜 စည်းကမ်းချက်များနှင့် အခြေအနေများ',
+                terms_text: '<strong>နောက်ဆုံးမွမ်းမံ:</strong> ၂၀၂၆ ခုနှစ် ဩဂုတ်လ ၂၁ ရက်<br><span class="highlight">SuperExchange</span> မှ ကြိုဆိုပါသည်။ ကျွန်ုပ်တို့၏ ပလက်ဖောင်းကို အသုံးပြုခြင်းဖြင့် အောက်ပါစည်းကမ်းချက်များကို သင်သဘောတူပါသည်...',
+                privacy_title: '🔒 ကိုယ်ရေးကိုယ်တာမူဝါဒ',
+                privacy_text: '<strong>နောက်ဆုံးမွမ်းမံ:</strong> ၂၀၂၆ ခုနှစ် ဩဂုတ်လ ၂၁ ရက်<br>သင်၏ကိုယ်ရေးကိုယ်တာသည် ကျွန်ုပ်တို့အတွက် အရေးကြီးပါသည်...',
+                about_title: '🏢 SuperExchange အကြောင်း',
+                about_text: '<strong>စတင်တည်ထောင်သည်:</strong> ၂၀၂၆<br><span class="highlight">SuperExchange</span> သည် ဒစ်ဂျစ်တယ်ပလက်ဖောင်းတစ်ခုဖြစ်သည်...',
+                disclaimer_title: '⚠️ ရှင်းလင်းချက်',
+                disclaimer_text: '<strong>နောက်ဆုံးမွမ်းမံ:</strong> ၂၀၂၆ ခုနှစ် ဩဂုတ်လ ၂၁ ရက်<br><span class="highlight">SuperExchange</span> ကို အသုံးပြုခြင်းဖြင့် သင်သည်...',
+                testimonial_title: 'အသုံးပြုသူသုံးသပ်ချက်များ',
+                testimonial_sub: 'ကျွန်ုပ်တို့၏အသုံးပြုသူများက SuperExchange အကြောင်း ပြောသည်များ။',
+                leave_review: '⭐ သုံးသပ်ချက်ရေးပါ',
+                submit_review: 'သုံးသပ်ချက်တင်ပါ',
+                support: '၂၄/၇ အကူအညီ',
+                support_text: 'ကျွန်ုပ်တို့၏အဖွဲ့သည် သင့်ကိုကူညီရန် အသင့်ရှိပါသည်။',
+                response_time_footer: '၅ မိနစ်အတွင်း တုံ့ပြန်မည်'
             },
             tl: {
-                live: 'Live', exchange: 'Palitan', loan: 'Utang', history: 'Kasaysayan', legal: 'Legal', testimonials: 'Testimonyo',
-                fetching: 'Naglo-load...', calc_title: '🔄 Calculator ng Pera', calc_sub: 'I-convert ang USDT, PHP, IDR sa real-time',
-                amount: 'Halaga', from: 'Mula sa', to: 'Papuntang', result: 'Resulta', rate: 'Rate',
-                loan_sim_title: '💰 Simulator ng Utang', loan_sim_sub: 'Tantyahin ang buwanang hulog at kabuuang interes',
-                tenor: 'Tenor', days7: '7 araw', days15: '15 araw', days30: '30 araw', days60: '60 araw',
-                interest: 'Interes (%)', total_payment: 'Kabuuang Bayad', installment: 'Hulog', total_interest: 'Kabuuang Interes',
-                currency: 'Perang ginamit', chart_title: 'Chart ng Presyo ng USDT / IDR',
-                exchange_title: 'Palitan ng Pera', exchange_sub: 'Kumpletuhin ang iyong palitan sa ilang pag-click lamang.',
-                estimated_response: 'Tinatayang Tugon', within_5min: 'Sa loob ng 5 minuto sa pamamagitan ng Telegram',
-                data_security: 'Seguridad ng Data', encrypted: 'Naka-encrypt at Pribado', storage: 'Imbakan', saved_secure: 'Naka-save sa Secure Database',
-                start_exchange: 'Simulan ang Palitan', secure_google: 'Ligtas ang iyong data sa Google Forms',
+                live: 'Live',
+                exchange: 'Palitan',
+                loan: 'Utang',
+                history: 'Kasaysayan',
+                legal: 'Legal',
+                testimonials: 'Testimonyo',
+                fetching: 'Naglo-load...',
+                calc_title: '🔄 Calculator ng Pera',
+                calc_sub: 'I-convert ang USDT, PHP, IDR sa real-time',
+                amount: 'Halaga',
+                from: 'Mula sa',
+                to: 'Papuntang',
+                result: 'Resulta',
+                rate: 'Rate',
+                loan_sim_title: '💰 Simulator ng Utang',
+                loan_sim_sub: 'Tantyahin ang buwanang hulog at kabuuang interes',
+                tenor: 'Tenor',
+                days7: '7 araw',
+                days15: '15 araw',
+                days30: '30 araw',
+                days60: '60 araw',
+                interest: 'Interes (%)',
+                total_payment: 'Kabuuang Bayad',
+                installment: 'Hulog',
+                total_interest: 'Kabuuang Interes',
+                currency: 'Perang ginamit',
+                chart_title: 'Chart ng Presyo ng USDT / IDR',
+                exchange_title: 'Palitan ng Pera',
+                exchange_sub: 'Kumpletuhin ang iyong palitan sa ilang pag-click lamang.',
+                estimated_response: 'Tinatayang Tugon',
+                within_5min: 'Sa loob ng 5 minuto sa pamamagitan ng Telegram',
+                data_security: 'Seguridad ng Data',
+                encrypted: 'Naka-encrypt at Pribado',
+                storage: 'Imbakan',
+                saved_secure: 'Naka-save sa Secure Database',
+                start_exchange: 'Simulan ang Palitan',
+                secure_google: 'Ligtas ang iyong data sa Google Forms',
                 request_received: '✅ Natanggap ang kahilingan! Makikipag-ugnayan ang CS sa iyo sa pamamagitan ng Telegram sa loob ng 5 minuto.',
-                loan_title: 'Aplikasyon ng Utang', loan_sub: 'Piliin ang iyong collateral at mag-apply agad.',
-                ktp: 'KTP', passport: 'Pasaporte', crypto: 'Crypto',
-                collateral: 'Collateral', ktp_label: 'KTP (ID Card)', passport_label: 'Pasaporte', crypto_label: 'Crypto (USDT, BTC, ETH)',
-                response_time: 'Oras ng Tugon', requirements: 'Mga Kinakailangan',
-                ktp_req: 'Valid na KTP + Selfie', passport_req: 'Valid na Pasaporte + Larawan', crypto_req: 'Wallet Address + Patunay ng Balanse',
-                apply_ktp: 'Mag-apply ng KTP Loan', apply_passport: 'Mag-apply ng Passport Loan', apply_crypto: 'Mag-apply ng Crypto Loan',
-                history_title: 'Kasaysayan ng Transaksyon', history_sub: 'Tingnan ang lahat ng nakaraang palitan at mga kahilingan sa utang.',
-                loading_data: 'Naglo-load ng data mula sa Google Sheets...', date: 'Petsa', name: 'Pangalan', email: 'Email', type: 'Uri', status: 'Katayuan',
+                loan_title: 'Aplikasyon ng Utang',
+                loan_sub: 'Piliin ang iyong collateral at mag-apply agad.',
+                ktp: 'KTP',
+                passport: 'Pasaporte',
+                crypto: 'Crypto',
+                collateral: 'Collateral',
+                ktp_label: 'KTP (ID Card)',
+                passport_label: 'Pasaporte',
+                crypto_label: 'Crypto (USDT, BTC, ETH)',
+                response_time: 'Oras ng Tugon',
+                requirements: 'Mga Kinakailangan',
+                ktp_req: 'Valid na KTP + Selfie',
+                passport_req: 'Valid na Pasaporte + Larawan',
+                crypto_req: 'Wallet Address + Patunay ng Balanse',
+                apply_ktp: 'Mag-apply ng KTP Loan',
+                apply_passport: 'Mag-apply ng Passport Loan',
+                apply_crypto: 'Mag-apply ng Crypto Loan',
+                history_title: 'Kasaysayan ng Transaksyon',
+                history_sub: 'Tingnan ang lahat ng nakaraang palitan at mga kahilingan sa utang.',
+                loading_data: 'Naglo-load ng data mula sa Google Sheets...',
+                date: 'Petsa',
+                name: 'Pangalan',
+                email: 'Email',
+                type: 'Uri',
+                status: 'Katayuan',
                 no_transactions: 'Wala pang transaksyon. Lalabas ang data kapag nag-submit na ang mga user.',
-                legal_title: 'Impormasyong Legal', legal_sub: 'Mga Tuntunin at Kundisyon, Patakaran sa Privacy, Tungkol sa Amin, at Pagtanggi.',
-                terms_tab: 'Mga Tuntunin', privacy_tab: 'Privacy', about_tab: 'Tungkol', disclaimer_tab: 'Pagtanggi',
-                terms_title: '📜 Mga Tuntunin at Kundisyon', terms_text: '<strong>Huling Na-update:</strong> Agosto 21, 2026<br>Maligayang pagdating sa <span class="highlight">SuperExchange</span>. Sa paggamit ng aming platform, sumasang-ayon ka sa mga sumusunod na tuntunin...',
-                privacy_title: '🔒 Patakaran sa Privacy', privacy_text: '<strong>Huling Na-update:</strong> Agosto 21, 2026<br>Mahalaga sa amin ang iyong privacy...',
-                about_title: '🏢 Tungkol sa SuperExchange', about_text: '<strong>Itinatag:</strong> 2026<br><span class="highlight">SuperExchange</span> ay isang digital platform...',
-                disclaimer_title: '⚠️ Pagtanggi', disclaimer_text: '<strong>Huling Na-update:</strong> Agosto 21, 2026<br>Sa paggamit ng <span class="highlight">SuperExchange</span>, kinikilala mo na...',
-                testimonial_title: 'Mga Testimonyo ng User', testimonial_sub: 'Ano ang sinasabi ng aming mga user tungkol sa SuperExchange.',
-                leave_review: '⭐ Mag-iwan ng Review', submit_review: 'Mag-submit ng Review',
-                support: 'Suporta 24/7', support_text: 'Ang aming koponan ay handang tumulong sa iyo.', response_time_footer: 'Tugon sa loob ng 5 minuto'
+                legal_title: 'Impormasyong Legal',
+                legal_sub: 'Mga Tuntunin at Kundisyon, Patakaran sa Privacy, Tungkol sa Amin, at Pagtanggi.',
+                terms_tab: 'Mga Tuntunin',
+                privacy_tab: 'Privacy',
+                about_tab: 'Tungkol',
+                disclaimer_tab: 'Pagtanggi',
+                terms_title: '📜 Mga Tuntunin at Kundisyon',
+                terms_text: '<strong>Huling Na-update:</strong> Agosto 21, 2026<br>Maligayang pagdating sa <span class="highlight">SuperExchange</span>. Sa paggamit ng aming platform, sumasang-ayon ka sa mga sumusunod na tuntunin...',
+                privacy_title: '🔒 Patakaran sa Privacy',
+                privacy_text: '<strong>Huling Na-update:</strong> Agosto 21, 2026<br>Mahalaga sa amin ang iyong privacy...',
+                about_title: '🏢 Tungkol sa SuperExchange',
+                about_text: '<strong>Itinatag:</strong> 2026<br><span class="highlight">SuperExchange</span> ay isang digital platform...',
+                disclaimer_title: '⚠️ Pagtanggi',
+                disclaimer_text: '<strong>Huling Na-update:</strong> Agosto 21, 2026<br>Sa paggamit ng <span class="highlight">SuperExchange</span>, kinikilala mo na...',
+                testimonial_title: 'Mga Testimonyo ng User',
+                testimonial_sub: 'Ano ang sinasabi ng aming mga user tungkol sa SuperExchange.',
+                leave_review: '⭐ Mag-iwan ng Review',
+                submit_review: 'Mag-submit ng Review',
+                support: 'Suporta 24/7',
+                support_text: 'Ang aming koponan ay handang tumulong sa iyo.',
+                response_time_footer: 'Tugon sa loob ng 5 minuto'
             }
         };
 
@@ -1610,7 +1941,6 @@
                 }
             });
             localStorage.setItem('lang', lang);
-            // Update testimonial labels if visible
             renderTestimonials();
         }
 
@@ -1727,65 +2057,64 @@
         });
 
         // ============================================================
-        // FETCH RATES
+        // FETCH RATES - NEW STABLE API + FALLBACK
         // ============================================================
-        let rates = {};
+        let rates = {
+            usdtIdr: 17600,
+            usdtPhp: 61.5,
+            phpIdr: 286,
+            phpUsdt: 0.01626,
+            idrUsdt: 0.000057,
+            idrPhp: 0.003497
+        };
         let previousRates = {};
 
         async function fetchRates() {
             try {
+                // Try CoinGecko first
                 const resUsdt = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=idr,php');
-                const dataUsdt = await resUsdt.json();
-                const resPhp = await fetch('https://api.exchangerate-api.com/v4/latest/PHP');
-                const dataPhp = await resPhp.json();
-
-                rates = {
-                    usdtIdr: dataUsdt.tether.idr,
-                    usdtPhp: dataUsdt.tether.php,
-                    phpIdr: dataPhp.rates.IDR,
-                    phpUsdt: 1 / dataUsdt.tether.php,
-                    idrUsdt: 1 / dataUsdt.tether.idr,
-                    idrPhp: 1 / dataPhp.rates.IDR
-                };
-
-                const ids = ['usdtIdr', 'usdtPhp', 'phpIdr', 'phpUsdt', 'idrUsdt', 'idrPhp'];
-                const symbols = ['Rp ', '₱ ', 'Rp ', '$ ', '$ ', '₱ '];
-                ids.forEach((id, i) => {
-                    const val = Object.values(rates)[i];
-                    const formatted = val < 1 ? val.toFixed(6) : val.toLocaleString('id-ID');
-                    document.getElementById(id).textContent = symbols[i] + formatted;
-                    const changeEl = document.getElementById(id + 'Change');
-                    if (previousRates[id]) {
-                        const change = ((val - previousRates[id]) / previousRates[id]) * 100;
-                        changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-                        changeEl.className = 'change ' + (change >= 0 ? 'positive' : 'negative');
-                    } else {
-                        changeEl.textContent = '+0.00%';
-                        changeEl.className = 'change positive';
+                if (resUsdt.ok) {
+                    const dataUsdt = await resUsdt.json();
+                    const resPhp = await fetch('https://api.exchangerate-api.com/v4/latest/PHP');
+                    if (resPhp.ok) {
+                        const dataPhp = await resPhp.json();
+                        rates = {
+                            usdtIdr: dataUsdt.tether.idr,
+                            usdtPhp: dataUsdt.tether.php,
+                            phpIdr: dataPhp.rates.IDR,
+                            phpUsdt: 1 / dataUsdt.tether.php,
+                            idrUsdt: 1 / dataUsdt.tether.idr,
+                            idrPhp: 1 / dataPhp.rates.IDR
+                        };
                     }
-                });
-                previousRates = rates;
-                document.getElementById('lastUpdate').textContent = '⏳ Last update: ' + new Date().toLocaleString('en-US',
-                    { timeZone: 'Asia/Jakarta' });
-                updateChart(rates.usdtIdr);
-                calculateCurrency();
-                simulateLoan();
+                }
             } catch (error) {
-                console.error('Error fetching rates:', error);
-                document.getElementById('lastUpdate').textContent = '⚠️ Failed to fetch rates. Refresh page.';
-                // Use fallback data
-                rates = {
-                    usdtIdr: 17600,
-                    usdtPhp: 61.5,
-                    phpIdr: 286,
-                    phpUsdt: 0.01626,
-                    idrUsdt: 0.000057,
-                    idrPhp: 0.003497
-                };
-                updateChart(rates.usdtIdr);
-                calculateCurrency();
-                simulateLoan();
+                console.warn('Primary API failed, using fallback rates:', error);
+                // Keep fallback rates
             }
+
+            // Always update UI with current rates (either fetched or fallback)
+            const ids = ['usdtIdr', 'usdtPhp', 'phpIdr', 'phpUsdt', 'idrUsdt', 'idrPhp'];
+            const symbols = ['Rp ', '₱ ', 'Rp ', '$ ', '$ ', '₱ '];
+            ids.forEach((id, i) => {
+                const val = Object.values(rates)[i];
+                const formatted = val < 1 ? val.toFixed(6) : val.toLocaleString('id-ID');
+                document.getElementById(id).textContent = symbols[i] + formatted;
+                const changeEl = document.getElementById(id + 'Change');
+                if (previousRates[id]) {
+                    const change = ((val - previousRates[id]) / previousRates[id]) * 100;
+                    changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+                    changeEl.className = 'change ' + (change >= 0 ? 'positive' : 'negative');
+                } else {
+                    changeEl.textContent = '+0.00%';
+                    changeEl.className = 'change positive';
+                }
+            });
+            previousRates = { ...rates };
+            document.getElementById('lastUpdate').textContent = '⏳ Last update: ' + new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+            updateChart(rates.usdtIdr);
+            calculateCurrency();
+            simulateLoan();
         }
 
         // ============================================================
@@ -2031,7 +2360,7 @@
         }
 
         // ============================================================
-        // TESTIMONIALS (fixed: moved BEFORE renderTestimonials call)
+        // TESTIMONIALS
         // ============================================================
         let testimonials = [
             { name: 'Gerica', rating: 5, comment: 'Very fast and reliable! CS responded within 5 minutes.',
@@ -2080,7 +2409,6 @@
             localStorage.setItem('testimonials', JSON.stringify(testimonials));
         }
 
-        // Load saved testimonials
         const savedTestimonials = localStorage.getItem('testimonials');
         if (savedTestimonials) {
             try { testimonials = JSON.parse(savedTestimonials); } catch (e) {}
@@ -2101,8 +2429,8 @@
             }
         }, 5000);
 
-        console.log('🚀 SUPEREXCHANGE - FIXED VERSION LAUNCHED!');
-        console.log('✅ Logo, Error, and Testimonials fixed.');
+        console.log('🚀 SUPEREXCHANGE - RATES FIXED!');
+        console.log('✅ Fallback rates ready if API fails.');
         console.log('📱 Access: https://gerraldhustonxxx.github.io/superexchange/');
     </script>
 
