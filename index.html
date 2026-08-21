@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
     </script>
     <style>
+        /* ===== ROOT VARIABLES (BINANCE THEME) ===== */
         :root {
             --bg-primary: #0B0E11;
             --bg-secondary: #1E2329;
@@ -465,7 +466,7 @@
             border-top: 1px solid var(--border-color);
             margin-top: 16px;
         }
-        /* HISTORY PAGE */
+        /* ===== HISTORY ===== */
         .history-section {
             background: var(--bg-secondary);
             border-radius: 16px;
@@ -561,6 +562,22 @@
             margin-bottom: 12px;
             color: var(--text-muted);
         }
+        .history-loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        .history-loading i {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            color: var(--binance-yellow);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 640px) {
             .header {
                 flex-direction: column;
@@ -624,10 +641,9 @@
 
     <div class="container">
 
-        <!-- HEADER dengan LOGO -->
+        <!-- ===== HEADER ===== -->
         <header class="header">
             <a href="#" class="logo">
-                <!-- GANTI URL DI BAWAH INI DENGAN LOGO ANDA -->
                 <img src="https://via.placeholder.com/40x40/F0B90B/0B0E11?text=SE" alt="SuperExchange Logo" />
                 <span class="logo-text">Super<span>Exchange</span></span>
             </a>
@@ -637,7 +653,7 @@
             </div>
         </header>
 
-        <!-- RATES -->
+        <!-- ===== RATES ===== -->
         <div class="rates-grid">
             <div class="rate-card"><div class="label"><i class="fas fa-coins" style="color:#F0B90B;"></i> USDT / IDR</div><div class="value usdt" id="usdtIdr">---</div><div class="change positive" id="usdtIdrChange">+0.00%</div></div>
             <div class="rate-card"><div class="label"><i class="fas fa-coins" style="color:#F0B90B;"></i> USDT / PHP</div><div class="value usdt" id="usdtPhp">---</div><div class="change positive" id="usdtPhpChange">+0.00%</div></div>
@@ -649,7 +665,7 @@
 
         <div class="last-update" id="lastUpdate">⏳ Last update: Fetching...</div>
 
-        <!-- CHART -->
+        <!-- ===== CHART ===== -->
         <div class="chart-section">
             <div class="chart-header">
                 <h3><i class="fas fa-chart-line"></i> USDT / IDR Price Chart</h3>
@@ -665,14 +681,14 @@
             <div class="chart-wrapper"><canvas id="priceChart"></canvas></div>
         </div>
 
-        <!-- ACTION BUTTONS (dengan tambahan History) -->
+        <!-- ===== ACTION BUTTONS ===== -->
         <div class="action-buttons">
             <a href="#" class="btn btn-primary" onclick="showForm('exchange')"><i class="fas fa-arrows-left-right"></i> Exchange</a>
             <a href="#" class="btn btn-secondary" onclick="showForm('loan')"><i class="fas fa-hand-holding-dollar"></i> Loan</a>
             <a href="#" class="btn btn-history" onclick="showForm('history')"><i class="fas fa-clock-rotate-left"></i> History</a>
         </div>
 
-        <!-- EXCHANGE FORM -->
+        <!-- ===== EXCHANGE FORM ===== -->
         <div class="form-section" id="formExchange">
             <div class="form-header"><div class="icon-circle"><i class="fas fa-arrows-left-right"></i></div><h2>Exchange Money</h2></div>
             <p class="subtitle">Complete your exchange request in just a few clicks.</p>
@@ -686,7 +702,7 @@
             <div class="success-box" id="exchangeSuccess"><i class="fas fa-check-circle"></i><p>✅ Request received! CS will contact you via Telegram within 5 minutes.</p></div>
         </div>
 
-        <!-- LOAN SECTION -->
+        <!-- ===== LOAN SECTION ===== -->
         <div class="form-section" id="formLoan">
             <div class="form-header"><div class="icon-circle"><i class="fas fa-hand-holding-dollar"></i></div><h2>Loan Application</h2></div>
             <p class="subtitle">Choose your collateral type and apply instantly.</p>
@@ -724,7 +740,7 @@
             </div>
         </div>
 
-        <!-- ===== HISTORY SECTION (Fitur No. 5) ===== -->
+        <!-- ===== HISTORY SECTION ===== -->
         <div class="history-section" id="formHistory">
             <div class="history-header">
                 <div class="icon-circle"><i class="fas fa-clock-rotate-left"></i></div>
@@ -732,7 +748,12 @@
             </div>
             <p class="subtitle">View all past exchange and loan requests.</p>
 
-            <div class="history-table-wrapper" id="historyContainer">
+            <div id="historyLoading" class="history-loading">
+                <i class="fas fa-spinner"></i>
+                <p>Loading data from Google Sheets...</p>
+            </div>
+
+            <div class="history-table-wrapper" id="historyContainer" style="display:none;">
                 <table class="history-table">
                     <thead>
                         <tr>
@@ -745,17 +766,17 @@
                         </tr>
                     </thead>
                     <tbody id="historyBody">
-                        <!-- Data akan diisi oleh JavaScript -->
                     </tbody>
                 </table>
             </div>
-            <div id="historyEmpty" class="history-empty">
+
+            <div id="historyEmpty" class="history-empty" style="display:none;">
                 <i class="fas fa-inbox"></i>
                 <p>No transactions yet. Data will appear here once users submit requests.</p>
             </div>
         </div>
 
-        <!-- CONTACT -->
+        <!-- ===== CONTACT ===== -->
         <div class="contact-section">
             <h3><i class="fas fa-headset"></i> 24/7 Support</h3>
             <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:12px;">Our team is ready to assist you.</p>
@@ -768,7 +789,9 @@
     </div>
 
     <script>
-        // ===== CLOCK =====
+        // =============================================
+        // 1. CLOCK
+        // =============================================
         function updateClock() {
             const now = new Date();
             document.getElementById('clockDisplay').textContent = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -776,7 +799,9 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // ===== SHOW FORM =====
+        // =============================================
+        // 2. SHOW FORM
+        // =============================================
         function showForm(type) {
             document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.history-section').forEach(el => el.classList.remove('active'));
@@ -791,11 +816,13 @@
             } else if (type === 'history') {
                 document.getElementById('formHistory').classList.add('active');
                 document.getElementById('formHistory').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                loadHistory();
+                loadHistoryFromSheets();
             }
         }
 
-        // ===== LOAN TABS =====
+        // =============================================
+        // 3. LOAN TABS
+        // =============================================
         document.querySelectorAll('.loan-tabs button').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.loan-tabs button').forEach(b => b.classList.remove('active'));
@@ -806,7 +833,9 @@
             });
         });
 
-        // ===== SUCCESS MESSAGE =====
+        // =============================================
+        // 4. SUCCESS MESSAGE
+        // =============================================
         document.querySelectorAll('.btn-submit-form').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 const parentSection = this.closest('.form-section') || this.closest('.loan-form');
@@ -821,7 +850,9 @@
             });
         });
 
-        // ===== FETCH RATES =====
+        // =============================================
+        // 5. FETCH RATES
+        // =============================================
         let previousRates = {};
         async function fetchRates() {
             try {
@@ -861,7 +892,9 @@
             }
         }
 
-        // ===== CHART =====
+        // =============================================
+        // 6. CHART
+        // =============================================
         let chartInstance = null;
         let chartData = [];
         const MAX_DATA_POINTS = 60;
@@ -903,44 +936,155 @@
             });
         });
 
-        // ===== HISTORY (Fitur No. 5) =====
-        // Gunakan data dummy sebagai contoh (karena Google Sheets tidak bisa diakses langsung dari frontend)
-        // Untuk integrasi nyata, Anda bisa publish Google Sheets sebagai CSV atau gunakan Apps Script API
-        function loadHistory() {
-            const tbody = document.getElementById('historyBody');
+        // =============================================
+        // 7. HISTORY FROM GOOGLE SHEETS (CSV)
+        // =============================================
+        const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT7BgGqqbA5l-pLHs_ZDQyfnjYCXT1MY3tt5cTggBS_U-pWNu7CLgiKhZx7LTSFxsFlnH8CrutDvo14/pub?output=csv';
+
+        async function loadHistoryFromSheets() {
+            const loading = document.getElementById('historyLoading');
+            const container = document.getElementById('historyContainer');
             const empty = document.getElementById('historyEmpty');
+            const tbody = document.getElementById('historyBody');
 
-            // Data dummy dari Google Sheets yang sudah ada
-            const transactions = [
-                { date: '8/21/2026 16:36:56', name: 'Gerica', email: 'gerica@gmail.com', type: 'Buy PHP (Sell USDT)', amount: 'Rp 10,000', status: 'Done' },
-                { date: '8/21/2026 17:45:43', name: 'gerica2', email: 'gerica88@gmail.com', type: 'Buy PHP (Sell USDT)', amount: 'Rp 10,000', status: 'Pending' },
-            ];
-
-            if (transactions.length === 0) {
-                tbody.innerHTML = '';
-                empty.style.display = 'block';
-                return;
-            }
-
+            // Show loading
+            loading.style.display = 'block';
+            container.style.display = 'none';
             empty.style.display = 'none';
-            tbody.innerHTML = transactions.map(t => `
-                <tr>
-                    <td>${t.date}</td>
-                    <td>${t.name}</td>
-                    <td>${t.email}</td>
-                    <td>${t.type}</td>
-                    <td>${t.amount}</td>
-                    <td><span class="status-badge ${t.status.toLowerCase()}">${t.status}</span></td>
-                </tr>
-            `).join('');
+
+            try {
+                const response = await fetch(SHEETS_CSV_URL);
+                const csvText = await response.text();
+
+                // Parse CSV
+                const rows = parseCSV(csvText);
+
+                if (rows.length <= 1) {
+                    loading.style.display = 'none';
+                    empty.style.display = 'block';
+                    return;
+                }
+
+                // Get headers (row 0)
+                const headers = rows[0];
+                // Find column indices
+                const dateIdx = headers.findIndex(h => h.toLowerCase().includes('timestamp'));
+                const nameIdx = headers.findIndex(h => h.toLowerCase().includes('full name'));
+                const emailIdx = headers.findIndex(h => h.toLowerCase().includes('email'));
+                const typeIdx = headers.findIndex(h => h.toLowerCase().includes('transaction type') || h.toLowerCase().includes('type'));
+                const amountIdx = headers.findIndex(h => h.toLowerCase().includes('amount'));
+                const statusIdx = headers.findIndex(h => h.toLowerCase().includes('status'));
+
+                // Build table rows (skip header row)
+                let html = '';
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (row.length === 0 || row.every(cell => cell.trim() === '')) continue;
+
+                    const date = row[dateIdx] || '';
+                    const name = row[nameIdx] || '';
+                    const email = row[emailIdx] || '';
+                    const type = row[typeIdx] || '';
+                    const amount = row[amountIdx] ? 'Rp ' + parseFloat(row[amountIdx]).toLocaleString('id-ID') : '';
+                    let status = row[statusIdx] || 'Pending';
+
+                    // Normalize status
+                    status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+                    if (!['Pending', 'Processed', 'Done'].includes(status)) {
+                        status = 'Pending';
+                    }
+
+                    const statusClass = status.toLowerCase();
+
+                    html += `
+                        <tr>
+                            <td>${date}</td>
+                            <td>${name}</td>
+                            <td>${email}</td>
+                            <td>${type}</td>
+                            <td>${amount}</td>
+                            <td><span class="status-badge ${statusClass}">${status}</span></td>
+                        </tr>
+                    `;
+                }
+
+                if (html === '') {
+                    loading.style.display = 'none';
+                    empty.style.display = 'block';
+                    return;
+                }
+
+                tbody.innerHTML = html;
+                loading.style.display = 'none';
+                container.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading history:', error);
+                loading.style.display = 'none';
+                empty.style.display = 'block';
+                empty.querySelector('p').textContent = '⚠️ Failed to load data from Google Sheets. Please try again later.';
+            }
         }
 
-        // Inisialisasi
+        // Simple CSV parser
+        function parseCSV(text) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let insideQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+
+                if (insideQuotes) {
+                    if (char === '"' && text[i + 1] === '"') {
+                        currentField += '"';
+                        i++;
+                    } else if (char === '"') {
+                        insideQuotes = false;
+                    } else {
+                        currentField += char;
+                    }
+                } else {
+                    if (char === '"') {
+                        insideQuotes = true;
+                    } else if (char === ',') {
+                        currentRow.push(currentField.trim());
+                        currentField = '';
+                    } else if (char === '\n' || char === '\r') {
+                        if (char === '\r' && text[i + 1] === '\n') {
+                            i++;
+                        }
+                        currentRow.push(currentField.trim());
+                        if (currentRow.some(field => field !== '')) {
+                            rows.push(currentRow);
+                        }
+                        currentRow = [];
+                        currentField = '';
+                    } else {
+                        currentField += char;
+                    }
+                }
+            }
+
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField.trim());
+                if (currentRow.some(field => field !== '')) {
+                    rows.push(currentRow);
+                }
+            }
+
+            return rows;
+        }
+
+        // =============================================
+        // 8. INIT
+        // =============================================
         initChart();
         fetchRates();
         setInterval(fetchRates, 30000);
 
-        // Simulasi update chart
+        // Simulate chart update
         setInterval(() => {
             if (previousRates.usdtIdr) {
                 const variation = (Math.random() - 0.5) * 200;
@@ -949,8 +1093,9 @@
             }
         }, 5000);
 
-        console.log('⚡ SuperExchange initialized!');
-        console.log('📊 Features: Logo, Status, History');
+        console.log('⚡ SuperExchange initialized with Google Sheets integration!');
+        console.log('📊 History will load data from published CSV.');
+        console.log('✅ Status column is now synced with Sheets.');
     </script>
 
 </body>
