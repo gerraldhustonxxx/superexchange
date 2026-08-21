@@ -4,17 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SuperExchange - Rates & Loans</title>
+    <meta name="description" content="SuperExchange - Real-time USDT, PHP, IDR exchange rates, currency calculator, loan simulator, and fast online loan applications. Available in 6 languages." />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
     </script>
     <style>
-        /* ===== ROOT VARIABLES (BINANCE THEME) ===== */
+        /* ============================================================
+           ROOT VARIABLES (DARK MODE DEFAULT - BINANCE THEME)
+           ============================================================ */
         :root {
             --bg-primary: #0B0E11;
             --bg-secondary: #1E2329;
             --bg-card: #1E2329;
             --bg-hover: #2B3139;
+            --bg-input: #0B0E11;
             --border-color: #2B3139;
             --text-primary: #EAECEF;
             --text-secondary: #848E9C;
@@ -24,7 +28,27 @@
             --green: #0ECB81;
             --red: #F6465D;
             --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --transition: 0.3s ease;
         }
+
+        /* LIGHT MODE */
+        [data-theme="light"] {
+            --bg-primary: #F5F5F5;
+            --bg-secondary: #FFFFFF;
+            --bg-card: #FFFFFF;
+            --bg-hover: #E8E8E8;
+            --bg-input: #F0F0F0;
+            --border-color: #D0D0D0;
+            --text-primary: #1A1A2E;
+            --text-secondary: #4A4A6A;
+            --text-muted: #8888AA;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -36,11 +60,27 @@
             color: var(--text-primary);
             min-height: 100vh;
             padding: 20px;
+            transition: background var(--transition), color var(--transition);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
         .header {
             display: flex;
             justify-content: space-between;
@@ -74,7 +114,8 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         .header-actions .badge {
             background: var(--bg-secondary);
@@ -84,14 +125,56 @@
             font-size: 0.75rem;
             font-weight: 500;
             border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .header-actions .badge i {
             color: var(--green);
-            margin-right: 4px;
         }
+        .header-actions select,
+        .header-actions button.lang-toggle {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: var(--transition);
+            outline: none;
+        }
+        .header-actions select:hover,
+        .header-actions button.lang-toggle:hover {
+            border-color: var(--binance-yellow);
+        }
+        .header-actions select option {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        .theme-toggle {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+        .theme-toggle:hover {
+            border-color: var(--binance-yellow);
+        }
+
+        /* ============================================================
+           RATES GRID
+           ============================================================ */
         .rates-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 12px;
             margin-bottom: 24px;
         }
@@ -100,7 +183,7 @@
             border-radius: 12px;
             padding: 16px 18px;
             border: 1px solid var(--border-color);
-            transition: all 0.2s ease;
+            transition: all var(--transition);
         }
         .rate-card:hover {
             border-color: var(--binance-yellow);
@@ -117,7 +200,7 @@
             gap: 6px;
         }
         .rate-card .value {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             margin-top: 4px;
         }
@@ -148,9 +231,110 @@
             margin-top: -12px;
             margin-bottom: 16px;
         }
+
+        /* ============================================================
+           TOOLS: KALKULATOR KURS & SIMULASI PINJAMAN
+           ============================================================ */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .tool-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: all var(--transition);
+        }
+        .tool-card:hover {
+            border-color: var(--binance-yellow);
+        }
+        .tool-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+        .tool-card .tool-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .tool-card .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .tool-card .input-group label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            min-width: 60px;
+        }
+        .tool-card .input-group input,
+        .tool-card .input-group select {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: var(--font);
+            outline: none;
+            transition: var(--transition);
+        }
+        .tool-card .input-group input:focus,
+        .tool-card .input-group select:focus {
+            border-color: var(--binance-yellow);
+        }
+        .tool-card .result-box {
+            background: var(--bg-primary);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .tool-card .result-box .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .tool-card .result-box .result-row:last-child {
+            border-bottom: none;
+        }
+        .tool-card .result-box .result-row .label {
+            color: var(--text-secondary);
+        }
+        .tool-card .result-box .result-row .value {
+            font-weight: 600;
+            color: var(--binance-yellow);
+        }
+        .tool-card .result-box .result-row .value.green {
+            color: var(--green);
+        }
+        .tool-card .result-box .result-row .value.red {
+            color: var(--red);
+        }
+
+        /* ============================================================
+           CHART
+           ============================================================ */
         .chart-section {
             background: var(--bg-secondary);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 20px;
             border: 1px solid var(--border-color);
             margin-bottom: 24px;
@@ -189,7 +373,7 @@
             font-size: 0.7rem;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            transition: var(--transition);
             font-family: var(--font);
         }
         .chart-tabs button:hover {
@@ -207,6 +391,10 @@
             width: 100% !important;
             height: 100% !important;
         }
+
+        /* ============================================================
+           ACTION BUTTONS
+           ============================================================ */
         .action-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -220,14 +408,14 @@
             font-size: 0.9rem;
             border: none;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             font-family: var(--font);
             flex: 1;
-            min-width: 160px;
+            min-width: 120px;
             justify-content: center;
         }
         .btn-primary {
@@ -256,6 +444,26 @@
             background: #1E3A5F;
             transform: translateY(-1px);
         }
+        .btn-legal {
+            background: #4A2B4A;
+            color: #fff;
+        }
+        .btn-legal:hover {
+            background: #3A1E3A;
+            transform: translateY(-1px);
+        }
+        .btn-testimonial {
+            background: #2B4A3A;
+            color: #fff;
+        }
+        .btn-testimonial:hover {
+            background: #1E3A2A;
+            transform: translateY(-1px);
+        }
+
+        /* ============================================================
+           FORM SECTIONS
+           ============================================================ */
         .form-section {
             background: var(--bg-secondary);
             border-radius: 16px;
@@ -300,7 +508,7 @@
             border-radius: 12px;
             padding: 24px;
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            transition: all var(--transition);
         }
         .form-card:hover {
             border-color: var(--binance-yellow);
@@ -340,7 +548,7 @@
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all var(--transition);
             font-family: var(--font);
             display: flex;
             align-items: center;
@@ -364,6 +572,7 @@
         .form-card .secure-badge i {
             color: var(--green);
         }
+
         .success-box {
             background: rgba(14, 203, 129, 0.08);
             border-radius: 12px;
@@ -387,6 +596,10 @@
             font-weight: 500;
             margin: 0;
         }
+
+        /* ============================================================
+           LOAN TABS
+           ============================================================ */
         .loan-tabs {
             display: flex;
             flex-wrap: wrap;
@@ -405,7 +618,7 @@
             font-weight: 600;
             font-size: 0.8rem;
             cursor: pointer;
-            transition: 0.2s;
+            transition: var(--transition);
             font-family: var(--font);
             flex: 1;
             min-width: 100px;
@@ -423,50 +636,125 @@
         .loan-form.active {
             display: block;
         }
-        .contact-section {
+
+        /* ============================================================
+           LEGAL PAGES
+           ============================================================ */
+        .legal-section {
             background: var(--bg-secondary);
             border-radius: 16px;
-            padding: 28px;
+            padding: 32px;
             border: 1px solid var(--border-color);
-            text-align: center;
-            margin-top: 8px;
+            margin-bottom: 24px;
+            display: none;
         }
-        .contact-section h3 {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 600;
+        .legal-section.active {
+            display: block;
+        }
+        .legal-section .legal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 8px;
         }
-        .contact-section .telegram-link {
-            display: inline-flex;
+        .legal-section .legal-header .icon-circle {
+            width: 44px;
+            height: 44px;
+            background: rgba(240, 185, 11, 0.12);
+            border-radius: 50%;
+            display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--binance-yellow);
+        }
+        .legal-section h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .legal-section .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            margin-left: 56px;
+        }
+        .legal-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 24px;
+            background: var(--bg-primary);
+            padding: 4px;
+            border-radius: 10px;
+        }
+        .legal-tabs button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+            flex: 1;
+            min-width: 100px;
+        }
+        .legal-tabs button:hover {
+            color: var(--text-primary);
+        }
+        .legal-tabs button.active {
+            background: var(--binance-yellow);
+            color: var(--bg-primary);
+        }
+        .legal-content {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .legal-content h3 {
             color: var(--binance-yellow);
             font-size: 1.1rem;
+            margin-bottom: 12px;
+            margin-top: 20px;
+        }
+        .legal-content h3:first-child {
+            margin-top: 0;
+        }
+        .legal-content p,
+        .legal-content ul {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+        .legal-content ul {
+            padding-left: 20px;
+        }
+        .legal-content ul li {
+            margin-bottom: 6px;
+        }
+        .legal-content .highlight {
+            color: var(--binance-yellow);
             font-weight: 600;
-            text-decoration: none;
-            padding: 10px 24px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            transition: 0.2s;
         }
-        .contact-section .telegram-link:hover {
-            border-color: var(--binance-yellow);
-            background: rgba(240, 185, 11, 0.06);
-        }
-        .contact-section .telegram-link i {
-            font-size: 1.4rem;
-            color: #26A5E4;
-        }
-        .footer {
-            text-align: center;
-            padding: 24px 0 8px;
+        .legal-content .last-updated {
             color: var(--text-muted);
             font-size: 0.75rem;
-            border-top: 1px solid var(--border-color);
+            font-style: italic;
             margin-top: 16px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
         }
-        /* ===== HISTORY ===== */
+
+        /* ============================================================
+           HISTORY
+           ============================================================ */
         .history-section {
             background: var(--bg-secondary);
             border-radius: 16px;
@@ -574,11 +862,271 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
-        @media (max-width: 640px) {
+        /* ============================================================
+           TESTIMONIALS / RATING
+           ============================================================ */
+        .testimonial-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            display: none;
+        }
+        .testimonial-section.active {
+            display: block;
+        }
+        .testimonial-section .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .testimonial-section .testimonial-header .icon-circle {
+            width: 44px;
+            height: 44px;
+            background: rgba(240, 185, 11, 0.12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--binance-yellow);
+        }
+        .testimonial-section h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .testimonial-section .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            margin-left: 56px;
+        }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .testimonial-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all var(--transition);
+        }
+        .testimonial-card:hover {
+            border-color: var(--binance-yellow);
+        }
+        .testimonial-card .stars {
+            color: var(--binance-yellow);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .testimonial-card .stars .empty-star {
+            color: var(--text-muted);
+        }
+        .testimonial-card .comment {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .testimonial-card .author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .testimonial-card .author .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--binance-yellow);
+            color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .testimonial-card .author .info .name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+        .testimonial-card .author .info .date {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .testimonial-form-box {
+            margin-top: 24px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .testimonial-form-box h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        .testimonial-form-box .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .testimonial-form-box .input-group input,
+        .testimonial-form-box .input-group textarea,
+        .testimonial-form-box .input-group select {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-family: var(--font);
+            outline: none;
+            transition: var(--transition);
+        }
+        .testimonial-form-box .input-group input:focus,
+        .testimonial-form-box .input-group textarea:focus,
+        .testimonial-form-box .input-group select:focus {
+            border-color: var(--binance-yellow);
+        }
+        .testimonial-form-box .input-group textarea {
+            min-height: 60px;
+            resize: vertical;
+            width: 100%;
+        }
+        .testimonial-form-box .btn-submit-testimonial {
+            padding: 10px 24px;
+            background: var(--binance-yellow);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+        .testimonial-form-box .btn-submit-testimonial:hover {
+            background: var(--binance-yellow-dark);
+            transform: translateY(-1px);
+        }
+
+        /* ============================================================
+           CONTACT
+           ============================================================ */
+        .contact-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            margin-top: 8px;
+        }
+        .contact-section h3 {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .contact-section .telegram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--binance-yellow);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .contact-section .telegram-link:hover {
+            border-color: var(--binance-yellow);
+            background: rgba(240, 185, 11, 0.06);
+        }
+        .contact-section .telegram-link i {
+            font-size: 1.4rem;
+            color: #26A5E4;
+        }
+
+        /* ============================================================
+           FLOATING CONTACT
+           ============================================================ */
+        .floating-contact {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 999;
+        }
+        .floating-contact a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            font-size: 1.6rem;
+            text-decoration: none;
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+        }
+        .floating-contact a:hover {
+            transform: scale(1.1);
+        }
+        .floating-contact .telegram-float {
+            background: #26A5E4;
+            color: #fff;
+        }
+        .floating-contact .whatsapp-float {
+            background: #25D366;
+            color: #fff;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            text-align: center;
+            padding: 24px 0 8px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 16px;
+        }
+        .footer a {
+            color: var(--binance-yellow);
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
             .header {
                 flex-direction: column;
                 align-items: stretch;
@@ -601,6 +1149,11 @@
                 font-size: 0.7rem;
                 padding: 6px 12px;
             }
+            .legal-tabs button {
+                min-width: 60px;
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
             .form-section {
                 padding: 20px;
             }
@@ -612,6 +1165,13 @@
                 align-items: flex-start;
                 gap: 4px;
             }
+            .legal-section .subtitle {
+                margin-left: 0;
+            }
+            .legal-content {
+                padding: 16px;
+                max-height: 350px;
+            }
             .history-section .subtitle {
                 margin-left: 0;
             }
@@ -621,6 +1181,24 @@
             .history-table th,
             .history-table td {
                 padding: 8px 10px;
+            }
+            .floating-contact {
+                bottom: 16px;
+                right: 16px;
+            }
+            .floating-contact a {
+                width: 48px;
+                height: 48px;
+                font-size: 1.3rem;
+            }
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+            .testimonial-section .subtitle {
+                margin-left: 0;
             }
         }
         @media (max-width: 400px) {
@@ -641,19 +1219,32 @@
 
     <div class="container">
 
-        <!-- ===== HEADER ===== -->
+        <!-- ============================================================
+        HEADER
+        ============================================================ -->
         <header class="header">
             <a href="#" class="logo">
-                <img src="Logo SuperExchange.png" alt="SuperExchange Logo" />
+                <img src="https://via.placeholder.com/40x40/F0B90B/0B0E11?text=SE" alt="SuperExchange Logo" />
                 <span class="logo-text">Super<span>Exchange</span></span>
             </a>
             <div class="header-actions">
                 <span class="badge"><i class="fas fa-circle"></i> Live</span>
                 <span class="badge" id="clockDisplay">Loading...</span>
+                <select id="langSelect" onchange="changeLanguage(this.value)">
+                    <option value="en">🇬🇧 English</option>
+                    <option value="id">🇮🇩 Indonesia</option>
+                    <option value="zh">🇨🇳 中文</option>
+                    <option value="vi">🇻🇳 Tiếng Việt</option>
+                    <option value="my">🇲🇲 မြန်မာ</option>
+                    <option value="tl">🇵🇭 Tagalog</option>
+                </select>
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
             </div>
         </header>
 
-        <!-- ===== RATES ===== -->
+        <!-- ============================================================
+        RATES
+        ============================================================ -->
         <div class="rates-grid">
             <div class="rate-card"><div class="label"><i class="fas fa-coins" style="color:#F0B90B;"></i> USDT / IDR</div><div class="value usdt" id="usdtIdr">---</div><div class="change positive" id="usdtIdrChange">+0.00%</div></div>
             <div class="rate-card"><div class="label"><i class="fas fa-coins" style="color:#F0B90B;"></i> USDT / PHP</div><div class="value usdt" id="usdtPhp">---</div><div class="change positive" id="usdtPhpChange">+0.00%</div></div>
@@ -665,7 +1256,68 @@
 
         <div class="last-update" id="lastUpdate">⏳ Last update: Fetching...</div>
 
-        <!-- ===== CHART ===== -->
+        <!-- ============================================================
+        TOOLS: KALKULATOR KURS & SIMULASI PINJAMAN
+        ============================================================ -->
+        <div class="tools-grid">
+            <!-- KALKULATOR KURS -->
+            <div class="tool-card" id="calculatorTool">
+                <h3>🔄 Currency Calculator</h3>
+                <p class="tool-subtitle">Convert between USDT, PHP, IDR in real-time</p>
+                <div class="input-group">
+                    <label>Amount</label>
+                    <input type="number" id="calcAmount" value="1" oninput="calculateCurrency()" />
+                </div>
+                <div class="input-group">
+                    <label>From</label>
+                    <select id="calcFrom" onchange="calculateCurrency()">
+                        <option value="usdt">USDT</option>
+                        <option value="php">PHP</option>
+                        <option value="idr">IDR</option>
+                    </select>
+                    <label>To</label>
+                    <select id="calcTo" onchange="calculateCurrency()">
+                        <option value="usdt">USDT</option>
+                        <option value="php">PHP</option>
+                        <option value="idr" selected>IDR</option>
+                    </select>
+                </div>
+                <div class="result-box" id="calcResult">
+                    <div class="result-row"><span class="label">Result</span><span class="value" id="calcResultValue">--</span></div>
+                    <div class="result-row"><span class="label">Rate</span><span class="value" id="calcRate">--</span></div>
+                </div>
+            </div>
+
+            <!-- SIMULASI PINJAMAN -->
+            <div class="tool-card" id="loanSimulatorTool">
+                <h3>💰 Loan Simulator</h3>
+                <p class="tool-subtitle">Estimate your monthly installment and total interest</p>
+                <div class="input-group">
+                    <label>Amount (IDR)</label>
+                    <input type="number" id="loanSimAmount" value="10000000" oninput="simulateLoan()" />
+                </div>
+                <div class="input-group">
+                    <label>Tenor</label>
+                    <select id="loanSimTenor" onchange="simulateLoan()">
+                        <option value="7">7 days</option>
+                        <option value="15">15 days</option>
+                        <option value="30" selected>30 days</option>
+                        <option value="60">60 days</option>
+                    </select>
+                    <label>Interest (%)</label>
+                    <input type="number" id="loanSimInterest" value="5" oninput="simulateLoan()" style="max-width:80px;" />
+                </div>
+                <div class="result-box" id="loanSimResult">
+                    <div class="result-row"><span class="label">Total Payment</span><span class="value green" id="loanSimTotal">--</span></div>
+                    <div class="result-row"><span class="label">Monthly Installment</span><span class="value" id="loanSimInstallment">--</span></div>
+                    <div class="result-row"><span class="label">Total Interest</span><span class="value red" id="loanSimInterestTotal">--</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        CHART
+        ============================================================ -->
         <div class="chart-section">
             <div class="chart-header">
                 <h3><i class="fas fa-chart-line"></i> USDT / IDR Price Chart</h3>
@@ -681,14 +1333,20 @@
             <div class="chart-wrapper"><canvas id="priceChart"></canvas></div>
         </div>
 
-        <!-- ===== ACTION BUTTONS ===== -->
+        <!-- ============================================================
+        ACTION BUTTONS
+        ============================================================ -->
         <div class="action-buttons">
-            <a href="#" class="btn btn-primary" onclick="showForm('exchange')"><i class="fas fa-arrows-left-right"></i> Exchange</a>
-            <a href="#" class="btn btn-secondary" onclick="showForm('loan')"><i class="fas fa-hand-holding-dollar"></i> Loan</a>
-            <a href="#" class="btn btn-history" onclick="showForm('history')"><i class="fas fa-clock-rotate-left"></i> History</a>
+            <a href="#" class="btn btn-primary" onclick="showForm('exchange')"><i class="fas fa-arrows-left-right"></i> <span data-lang="exchange">Exchange</span></a>
+            <a href="#" class="btn btn-secondary" onclick="showForm('loan')"><i class="fas fa-hand-holding-dollar"></i> <span data-lang="loan">Loan</span></a>
+            <a href="#" class="btn btn-history" onclick="showForm('history')"><i class="fas fa-clock-rotate-left"></i> <span data-lang="history">History</span></a>
+            <a href="#" class="btn btn-legal" onclick="showForm('legal')"><i class="fas fa-file-contract"></i> <span data-lang="legal">Legal</span></a>
+            <a href="#" class="btn btn-testimonial" onclick="showForm('testimonial')"><i class="fas fa-star"></i> <span data-lang="testimonials">Testimonials</span></a>
         </div>
 
-        <!-- ===== EXCHANGE FORM ===== -->
+        <!-- ============================================================
+        EXCHANGE FORM
+        ============================================================ -->
         <div class="form-section" id="formExchange">
             <div class="form-header"><div class="icon-circle"><i class="fas fa-arrows-left-right"></i></div><h2>Exchange Money</h2></div>
             <p class="subtitle">Complete your exchange request in just a few clicks.</p>
@@ -702,7 +1360,9 @@
             <div class="success-box" id="exchangeSuccess"><i class="fas fa-check-circle"></i><p>✅ Request received! CS will contact you via Telegram within 5 minutes.</p></div>
         </div>
 
-        <!-- ===== LOAN SECTION ===== -->
+        <!-- ============================================================
+        LOAN SECTION
+        ============================================================ -->
         <div class="form-section" id="formLoan">
             <div class="form-header"><div class="icon-circle"><i class="fas fa-hand-holding-dollar"></i></div><h2>Loan Application</h2></div>
             <p class="subtitle">Choose your collateral type and apply instantly.</p>
@@ -740,19 +1400,19 @@
             </div>
         </div>
 
-        <!-- ===== HISTORY SECTION ===== -->
+        <!-- ============================================================
+        HISTORY
+        ============================================================ -->
         <div class="history-section" id="formHistory">
             <div class="history-header">
                 <div class="icon-circle"><i class="fas fa-clock-rotate-left"></i></div>
                 <h2>Transaction History</h2>
             </div>
             <p class="subtitle">View all past exchange and loan requests.</p>
-
             <div id="historyLoading" class="history-loading">
                 <i class="fas fa-spinner"></i>
                 <p>Loading data from Google Sheets...</p>
             </div>
-
             <div class="history-table-wrapper" id="historyContainer" style="display:none;">
                 <table class="history-table">
                     <thead>
@@ -765,18 +1425,71 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody id="historyBody">
-                    </tbody>
+                    <tbody id="historyBody"></tbody>
                 </table>
             </div>
-
             <div id="historyEmpty" class="history-empty" style="display:none;">
                 <i class="fas fa-inbox"></i>
                 <p>No transactions yet. Data will appear here once users submit requests.</p>
             </div>
         </div>
 
-        <!-- ===== CONTACT ===== -->
+        <!-- ============================================================
+        LEGAL
+        ============================================================ -->
+        <div class="legal-section" id="formLegal">
+            <div class="legal-header">
+                <div class="icon-circle"><i class="fas fa-file-contract"></i></div>
+                <h2>Legal Information</h2>
+            </div>
+            <p class="subtitle">Terms &amp; Conditions, Privacy Policy, About Us, and Disclaimer.</p>
+            <div class="legal-tabs">
+                <button class="active" data-legal="terms"><i class="fas fa-file-lines"></i> Terms</button>
+                <button data-legal="privacy"><i class="fas fa-shield"></i> Privacy</button>
+                <button data-legal="about"><i class="fas fa-building"></i> About</button>
+                <button data-legal="disclaimer"><i class="fas fa-triangle-exclamation"></i> Disclaimer</button>
+            </div>
+            <div class="legal-content active" id="legalTerms"><h3>📜 Terms &amp; Conditions</h3><p><strong>Last Updated:</strong> August 21, 2026</p><p>Welcome to <span class="highlight">SuperExchange</span>. By using our platform, you agree to the following terms...</p><div class="last-updated">📌 Last Updated: August 21, 2026</div></div>
+            <div class="legal-content" id="legalPrivacy" style="display:none;"><h3>🔒 Privacy Policy</h3><p><strong>Last Updated:</strong> August 21, 2026</p><p>Your privacy is important to us...</p><div class="last-updated">📌 Last Updated: August 21, 2026</div></div>
+            <div class="legal-content" id="legalAbout" style="display:none;"><h3>🏢 About SuperExchange</h3><p><strong>Founded:</strong> 2026</p><p><span class="highlight">SuperExchange</span> is a digital platform...</p><div class="last-updated">📌 Last Updated: August 21, 2026</div></div>
+            <div class="legal-content" id="legalDisclaimer" style="display:none;"><h3>⚠️ Disclaimer</h3><p><strong>Last Updated:</strong> August 21, 2026</p><p>By using <span class="highlight">SuperExchange</span>, you acknowledge...</p><div class="last-updated">📌 Last Updated: August 21, 2026</div></div>
+        </div>
+
+        <!-- ============================================================
+        TESTIMONIALS / RATING
+        ============================================================ -->
+        <div class="testimonial-section" id="formTestimonial">
+            <div class="testimonial-header">
+                <div class="icon-circle"><i class="fas fa-star"></i></div>
+                <h2>User Testimonials</h2>
+            </div>
+            <p class="subtitle">What our users say about SuperExchange.</p>
+            <div class="testimonial-grid" id="testimonialGrid">
+                <!-- Will be populated by JS -->
+            </div>
+            <div class="testimonial-form-box">
+                <h4>⭐ Leave a Review</h4>
+                <div class="input-group">
+                    <input type="text" id="testiName" placeholder="Your name" />
+                    <select id="testiRating">
+                        <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
+                        <option value="4">⭐⭐⭐⭐ - Good</option>
+                        <option value="3">⭐⭐⭐ - Average</option>
+                        <option value="2">⭐⭐ - Poor</option>
+                        <option value="1">⭐ - Terrible</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <textarea id="testiComment" placeholder="Write your review here..."></textarea>
+                </div>
+                <button class="btn-submit-testimonial" onclick="submitTestimonial()"><i class="fas fa-paper-plane"></i> Submit Review</button>
+                <div id="testiStatus" style="margin-top:10px;color:var(--green);font-size:0.9rem;"></div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        CONTACT
+        ============================================================ -->
         <div class="contact-section">
             <h3><i class="fas fa-headset"></i> 24/7 Support</h3>
             <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:12px;">Our team is ready to assist you.</p>
@@ -784,14 +1497,30 @@
             <p style="color:var(--text-muted);font-size:0.7rem;margin-top:10px;">Response within 5 minutes</p>
         </div>
 
-        <div class="footer">&copy; 2026 SuperExchange. All rights reserved.</div>
+        <!-- ============================================================
+        FOOTER
+        ============================================================ -->
+        <div class="footer">
+            &copy; 2026 SuperExchange. All rights reserved. | <a href="#" onclick="showForm('legal');return false;">Legal</a> | <a href="#" onclick="showForm('testimonial');return false;">Testimonials</a>
+        </div>
 
     </div>
 
+    <!-- ============================================================
+    FLOATING CONTACT
+    ============================================================ -->
+    <div class="floating-contact">
+        <a href="https://t.me/Huann99" target="_blank" class="telegram-float" title="Chat on Telegram"><i class="fab fa-telegram-plane"></i></a>
+        <a href="https://wa.me/6281234567890" target="_blank" class="whatsapp-float" title="Chat on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    </div>
+
+    <!-- ============================================================
+    SCRIPT
+    ============================================================ -->
     <script>
-        // =============================================
+        // ============================================================
         // 1. CLOCK
-        // =============================================
+        // ============================================================
         function updateClock() {
             const now = new Date();
             document.getElementById('clockDisplay').textContent = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -799,30 +1528,87 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // =============================================
-        // 2. SHOW FORM
-        // =============================================
+        // ============================================================
+        // 2. THEME TOGGLE (Dark / Light)
+        // ============================================================
+        let currentTheme = 'dark';
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeBtn');
+            if (currentTheme === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                btn.textContent = '☀️';
+                currentTheme = 'light';
+            } else {
+                html.removeAttribute('data-theme');
+                btn.textContent = '🌙';
+                currentTheme = 'dark';
+            }
+            localStorage.setItem('theme', currentTheme);
+        }
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.getElementById('themeBtn').textContent = '☀️';
+            currentTheme = 'light';
+        }
+
+        // ============================================================
+        // 3. LANGUAGE (Multi-language)
+        // ============================================================
+        const translations = {
+            en: { exchange: 'Exchange', loan: 'Loan', history: 'History', legal: 'Legal', testimonials: 'Testimonials' },
+            id: { exchange: 'Tukar Uang', loan: 'Pinjaman', history: 'Riwayat', legal: 'Hukum', testimonials: 'Testimoni' },
+            zh: { exchange: '兑换', loan: '贷款', history: '历史', legal: '法律', testimonials: '评价' },
+            vi: { exchange: 'Đổi tiền', loan: 'Vay', history: 'Lịch sử', legal: 'Pháp lý', testimonials: 'Đánh giá' },
+            my: { exchange: 'ငွေလဲ', loan: 'ချေး', history: 'မှတ်တမ်း', legal: 'ဥပဒေ', testimonials: 'သုံးသပ်ချက်' },
+            tl: { exchange: 'Palitan', loan: 'Utang', history: 'Kasaysayan', legal: 'Legal', testimonials: 'Testimonyo' }
+        };
+
+        function changeLanguage(lang) {
+            const labels = document.querySelectorAll('[data-lang]');
+            labels.forEach(el => {
+                const key = el.getAttribute('data-lang');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            localStorage.setItem('lang', lang);
+        }
+        // Load saved language
+        const savedLang = localStorage.getItem('lang');
+        if (savedLang && translations[savedLang]) {
+            document.getElementById('langSelect').value = savedLang;
+            changeLanguage(savedLang);
+        }
+
+        // ============================================================
+        // 4. SHOW FORM
+        // ============================================================
         function showForm(type) {
-            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.history-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.form-section, .history-section, .legal-section, .testimonial-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.success-box').forEach(el => el.classList.remove('show'));
 
-            if (type === 'exchange') {
-                document.getElementById('formExchange').classList.add('active');
-                document.getElementById('formExchange').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else if (type === 'loan') {
-                document.getElementById('formLoan').classList.add('active');
-                document.getElementById('formLoan').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else if (type === 'history') {
-                document.getElementById('formHistory').classList.add('active');
-                document.getElementById('formHistory').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                loadHistoryFromSheets();
+            const map = {
+                exchange: 'formExchange',
+                loan: 'formLoan',
+                history: 'formHistory',
+                legal: 'formLegal',
+                testimonial: 'formTestimonial'
+            };
+            const el = document.getElementById(map[type]);
+            if (el) {
+                el.classList.add('active');
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (type === 'history') loadHistoryFromSheets();
+                if (type === 'testimonial') renderTestimonials();
             }
         }
 
-        // =============================================
-        // 3. LOAN TABS
-        // =============================================
+        // ============================================================
+        // 5. LOAN TABS
+        // ============================================================
         document.querySelectorAll('.loan-tabs button').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.loan-tabs button').forEach(b => b.classList.remove('active'));
@@ -833,45 +1619,63 @@
             });
         });
 
-        // =============================================
-        // 4. SUCCESS MESSAGE
-        // =============================================
+        // ============================================================
+        // 6. LEGAL TABS
+        // ============================================================
+        document.querySelectorAll('.legal-tabs button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.legal-tabs button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const target = this.dataset.legal;
+                document.querySelectorAll('.legal-content').forEach(el => el.style.display = 'none');
+                document.getElementById('legal' + target.charAt(0).toUpperCase() + target.slice(1)).style.display = 'block';
+            });
+        });
+
+        // ============================================================
+        // 7. SUCCESS MESSAGE
+        // ============================================================
         document.querySelectorAll('.btn-submit-form').forEach(btn => {
-            btn.addEventListener('click', function(e) {
+            btn.addEventListener('click', function() {
                 const parentSection = this.closest('.form-section') || this.closest('.loan-form');
                 if (parentSection) {
                     const successBox = parentSection.querySelector('.success-box');
                     if (successBox) {
                         document.querySelectorAll('.success-box').forEach(el => el.classList.remove('show'));
                         successBox.classList.add('show');
-                        setTimeout(() => { successBox.classList.remove('show'); }, 10000);
+                        setTimeout(() => successBox.classList.remove('show'), 10000);
                     }
                 }
             });
         });
 
-        // =============================================
-        // 5. FETCH RATES
-        // =============================================
+        // ============================================================
+        // 8. FETCH RATES
+        // ============================================================
+        let rates = {};
         let previousRates = {};
+
         async function fetchRates() {
             try {
                 const resUsdt = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=idr,php');
                 const dataUsdt = await resUsdt.json();
                 const resPhp = await fetch('https://api.exchangerate-api.com/v4/latest/PHP');
                 const dataPhp = await resPhp.json();
-                const usdtIdr = dataUsdt.tether.idr;
-                const usdtPhp = dataUsdt.tether.php;
-                const phpIdr = dataPhp.rates.IDR;
-                const phpUsdt = 1 / usdtPhp;
-                const idrUsdt = 1 / usdtIdr;
-                const idrPhp = 1 / phpIdr;
-                const rates = { usdtIdr, usdtPhp, phpIdr, phpUsdt, idrUsdt, idrPhp };
+
+                rates = {
+                    usdtIdr: dataUsdt.tether.idr,
+                    usdtPhp: dataUsdt.tether.php,
+                    phpIdr: dataPhp.rates.IDR,
+                    phpUsdt: 1 / dataUsdt.tether.php,
+                    idrUsdt: 1 / dataUsdt.tether.idr,
+                    idrPhp: 1 / dataPhp.rates.IDR
+                };
+
                 const ids = ['usdtIdr', 'usdtPhp', 'phpIdr', 'phpUsdt', 'idrUsdt', 'idrPhp'];
                 const symbols = ['Rp ', '₱ ', 'Rp ', '$ ', '$ ', '₱ '];
                 ids.forEach((id, i) => {
                     const val = Object.values(rates)[i];
-                    const formatted = typeof val === 'number' && val < 1 ? val.toFixed(6) : val.toLocaleString('id-ID');
+                    const formatted = val < 1 ? val.toFixed(6) : val.toLocaleString('id-ID');
                     document.getElementById(id).textContent = symbols[i] + formatted;
                     const changeEl = document.getElementById(id + 'Change');
                     if (previousRates[id]) {
@@ -885,16 +1689,18 @@
                 });
                 previousRates = rates;
                 document.getElementById('lastUpdate').textContent = '⏳ Last update: ' + new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
-                updateChart(usdtIdr);
+                updateChart(rates.usdtIdr);
+                calculateCurrency(); // update calculator
+                simulateLoan(); // update loan simulator
             } catch (error) {
                 console.error('Error:', error);
                 document.getElementById('lastUpdate').textContent = '⚠️ Failed to fetch rates. Refresh page.';
             }
         }
 
-        // =============================================
-        // 6. CHART
-        // =============================================
+        // ============================================================
+        // 9. CHART
+        // ============================================================
         let chartInstance = null;
         let chartData = [];
         const MAX_DATA_POINTS = 60;
@@ -936,9 +1742,58 @@
             });
         });
 
-        // =============================================
-        // 7. HISTORY FROM GOOGLE SHEETS (CSV)
-        // =============================================
+        // ============================================================
+        // 10. KALKULATOR KURS (AUTO)
+        // ============================================================
+        function calculateCurrency() {
+            const amount = parseFloat(document.getElementById('calcAmount').value) || 0;
+            const from = document.getElementById('calcFrom').value;
+            const to = document.getElementById('calcTo').value;
+            if (!rates.usdtIdr) return;
+
+            let usdValue = 0;
+            if (from === 'usdt') usdValue = amount;
+            else if (from === 'php') usdValue = amount * rates.phpUsdt;
+            else if (from === 'idr') usdValue = amount * rates.idrUsdt;
+
+            let result = 0;
+            if (to === 'usdt') result = usdValue;
+            else if (to === 'php') result = usdValue * rates.usdtPhp;
+            else if (to === 'idr') result = usdValue * rates.usdtIdr;
+
+            const rate = (from === 'usdt' && to === 'idr') ? rates.usdtIdr :
+                (from === 'usdt' && to === 'php') ? rates.usdtPhp :
+                (from === 'php' && to === 'idr') ? rates.phpIdr :
+                (from === 'idr' && to === 'usdt') ? rates.idrUsdt :
+                (from === 'php' && to === 'usdt') ? rates.phpUsdt :
+                (from === 'idr' && to === 'php') ? rates.idrPhp : 0;
+
+            const symbols = { usdt: '$', php: '₱', idr: 'Rp' };
+            document.getElementById('calcResultValue').textContent = symbols[to] + ' ' + result.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('calcRate').textContent = '1 ' + from.toUpperCase() + ' = ' + symbols[to] + ' ' + rate.toFixed(4);
+        }
+
+        // ============================================================
+        // 11. SIMULASI PINJAMAN (AUTO)
+        // ============================================================
+        function simulateLoan() {
+            const amount = parseFloat(document.getElementById('loanSimAmount').value) || 0;
+            const tenor = parseInt(document.getElementById('loanSimTenor').value) || 30;
+            const interestRate = parseFloat(document.getElementById('loanSimInterest').value) || 5;
+
+            const monthlyRate = interestRate / 100 / 30;
+            const totalInterest = amount * monthlyRate * tenor;
+            const totalPayment = amount + totalInterest;
+            const installment = totalPayment / tenor;
+
+            document.getElementById('loanSimTotal').textContent = 'Rp ' + totalPayment.toLocaleString('id-ID');
+            document.getElementById('loanSimInstallment').textContent = 'Rp ' + installment.toLocaleString('id-ID', { minimumFractionDigits: 0 });
+            document.getElementById('loanSimInterestTotal').textContent = 'Rp ' + totalInterest.toLocaleString('id-ID');
+        }
+
+        // ============================================================
+        // 12. HISTORY (Google Sheets CSV)
+        // ============================================================
         const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT7BgGqqbA5l-pLHs_ZDQyfnjYCXT1MY3tt5cTggBS_U-pWNu7CLgiKhZx7LTSFxsFlnH8CrutDvo14/pub?output=csv';
 
         async function loadHistoryFromSheets() {
@@ -947,7 +1802,6 @@
             const empty = document.getElementById('historyEmpty');
             const tbody = document.getElementById('historyBody');
 
-            // Show loading
             loading.style.display = 'block';
             container.style.display = 'none';
             empty.style.display = 'none';
@@ -955,8 +1809,6 @@
             try {
                 const response = await fetch(SHEETS_CSV_URL);
                 const csvText = await response.text();
-
-                // Parse CSV
                 const rows = parseCSV(csvText);
 
                 if (rows.length <= 1) {
@@ -965,9 +1817,7 @@
                     return;
                 }
 
-                // Get headers (row 0)
                 const headers = rows[0];
-                // Find column indices
                 const dateIdx = headers.findIndex(h => h.toLowerCase().includes('timestamp'));
                 const nameIdx = headers.findIndex(h => h.toLowerCase().includes('full name'));
                 const emailIdx = headers.findIndex(h => h.toLowerCase().includes('email'));
@@ -975,7 +1825,6 @@
                 const amountIdx = headers.findIndex(h => h.toLowerCase().includes('amount'));
                 const statusIdx = headers.findIndex(h => h.toLowerCase().includes('status'));
 
-                // Build table rows (skip header row)
                 let html = '';
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i];
@@ -987,25 +1836,11 @@
                     const type = row[typeIdx] || '';
                     const amount = row[amountIdx] ? 'Rp ' + parseFloat(row[amountIdx]).toLocaleString('id-ID') : '';
                     let status = row[statusIdx] || 'Pending';
-
-                    // Normalize status
                     status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-                    if (!['Pending', 'Processed', 'Done'].includes(status)) {
-                        status = 'Pending';
-                    }
-
+                    if (!['Pending', 'Processed', 'Done'].includes(status)) status = 'Pending';
                     const statusClass = status.toLowerCase();
 
-                    html += `
-                        <tr>
-                            <td>${date}</td>
-                            <td>${name}</td>
-                            <td>${email}</td>
-                            <td>${type}</td>
-                            <td>${amount}</td>
-                            <td><span class="status-badge ${statusClass}">${status}</span></td>
-                        </tr>
-                    `;
+                    html += `<tr><td>${date}</td><td>${name}</td><td>${email}</td><td>${type}</td><td>${amount}</td><td><span class="status-badge ${statusClass}">${status}</span></td></tr>`;
                 }
 
                 if (html === '') {
@@ -1026,76 +1861,104 @@
             }
         }
 
-        // Simple CSV parser
         function parseCSV(text) {
             const rows = [];
             let currentRow = [];
             let currentField = '';
             let insideQuotes = false;
-
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
-
                 if (insideQuotes) {
-                    if (char === '"' && text[i + 1] === '"') {
-                        currentField += '"';
-                        i++;
-                    } else if (char === '"') {
-                        insideQuotes = false;
-                    } else {
-                        currentField += char;
-                    }
+                    if (char === '"' && text[i + 1] === '"') { currentField += '"';
+                        i++; } else if (char === '"') { insideQuotes = false; } else { currentField += char; }
                 } else {
-                    if (char === '"') {
-                        insideQuotes = true;
-                    } else if (char === ',') {
+                    if (char === '"') { insideQuotes = true; } else if (char === ',') { currentRow.push(currentField.trim());
+                        currentField = ''; } else if (char === '\n' || char === '\r') {
+                        if (char === '\r' && text[i + 1] === '\n') i++;
                         currentRow.push(currentField.trim());
-                        currentField = '';
-                    } else if (char === '\n' || char === '\r') {
-                        if (char === '\r' && text[i + 1] === '\n') {
-                            i++;
-                        }
-                        currentRow.push(currentField.trim());
-                        if (currentRow.some(field => field !== '')) {
-                            rows.push(currentRow);
-                        }
+                        if (currentRow.some(f => f !== '')) rows.push(currentRow);
                         currentRow = [];
                         currentField = '';
-                    } else {
-                        currentField += char;
-                    }
+                    } else { currentField += char; }
                 }
             }
-
-            if (currentField !== '' || currentRow.length > 0) {
-                currentRow.push(currentField.trim());
-                if (currentRow.some(field => field !== '')) {
-                    rows.push(currentRow);
-                }
-            }
-
+            if (currentField !== '' || currentRow.length > 0) { currentRow.push(currentField.trim()); if (currentRow.some(f => f !== '')) rows.push(currentRow); }
             return rows;
         }
 
-        // =============================================
-        // 8. INIT
-        // =============================================
+        // ============================================================
+        // 13. TESTIMONIALS (RATING)
+        // ============================================================
+        let testimonials = [
+            { name: 'Gerica', rating: 5, comment: 'Very fast and reliable! CS responded within 5 minutes.', date: '2026-08-21' },
+            { name: 'gerica2', rating: 4, comment: 'Good service, will use again for my next exchange.', date: '2026-08-20' },
+        ];
+
+        function renderTestimonials() {
+            const grid = document.getElementById('testimonialGrid');
+            grid.innerHTML = testimonials.map(t => {
+                const stars = '⭐'.repeat(t.rating) + '☆'.repeat(5 - t.rating);
+                return `
+                    <div class="testimonial-card">
+                        <div class="stars">${stars}</div>
+                        <div class="comment">"${t.comment}"</div>
+                        <div class="author">
+                            <div class="avatar">${t.name.charAt(0).toUpperCase()}</div>
+                            <div class="info"><div class="name">${t.name}</div><div class="date">${t.date}</div></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function submitTestimonial() {
+            const name = document.getElementById('testiName').value.trim();
+            const rating = parseInt(document.getElementById('testiRating').value);
+            const comment = document.getElementById('testiComment').value.trim();
+            const status = document.getElementById('testiStatus');
+
+            if (!name || !comment) {
+                status.style.color = 'var(--red)';
+                status.textContent = '⚠️ Please fill in your name and review.';
+                return;
+            }
+
+            testimonials.unshift({ name, rating, comment, date: new Date().toISOString().slice(0, 10) });
+            renderTestimonials();
+            document.getElementById('testiName').value = '';
+            document.getElementById('testiComment').value = '';
+            status.style.color = 'var(--green)';
+            status.textContent = '✅ Thank you for your review!';
+            setTimeout(() => status.textContent = '', 5000);
+
+            // Save to localStorage
+            localStorage.setItem('testimonials', JSON.stringify(testimonials));
+        }
+
+        // Load saved testimonials
+        const savedTestimonials = localStorage.getItem('testimonials');
+        if (savedTestimonials) {
+            try { testimonials = JSON.parse(savedTestimonials); } catch (e) {}
+        }
+        renderTestimonials();
+
+        // ============================================================
+        // 14. INIT
+        // ============================================================
         initChart();
         fetchRates();
         setInterval(fetchRates, 30000);
 
-        // Simulate chart update
         setInterval(() => {
-            if (previousRates.usdtIdr) {
+            if (rates.usdtIdr) {
                 const variation = (Math.random() - 0.5) * 200;
-                const newPrice = Math.max(previousRates.usdtIdr + variation, 15000);
-                updateChart(newPrice);
+                updateChart(Math.max(rates.usdtIdr + variation, 15000));
             }
         }, 5000);
 
-        console.log('⚡ SuperExchange initialized with Google Sheets integration!');
-        console.log('📊 History will load data from published CSV.');
-        console.log('✅ Status column is now synced with Sheets.');
+        console.log('🚀 SUPEREXCHANGE - PREMIUM ULTIMATE LAUNCHED!');
+        console.log('✅ Features: Rates, Chart, Calculator, Loan Simulator, Exchange, Loan, History, Legal, Testimonials, Dark/Light, 6 Languages, Floating Contact');
+        console.log('📱 Access: https://gerraldhustonxxx.github.io/superexchange/');
     </script>
 
 </body>
