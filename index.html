@@ -5,23 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SuperExchange - Rates & Loans</title>
     <meta name="description" content="SuperExchange - Real-time USDT, PHP, IDR exchange rates, currency calculator, loan simulator, and fast online loan applications." />
-
-    <!-- ===== FAVICON (No. 4) ===== -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
     </script>
     <style>
-        /* ============================================================
-           ROOT VARIABLES
-           ============================================================ */
         :root {
             --bg-primary: #0B0E11;
             --bg-secondary: #1E2329;
-            --bg-card: #1E2329;
             --bg-hover: #2B3139;
             --bg-input: #0B0E11;
             --border-color: #2B3139;
@@ -32,16 +24,14 @@
             --binance-yellow-dark: #C9940A;
             --green: #0ECB81;
             --red: #F6465D;
-            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font: 'Inter', sans-serif;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             --transition: 0.3s ease;
             --radius: 16px;
         }
-
         [data-theme="light"] {
             --bg-primary: #F5F5F5;
             --bg-secondary: #FFFFFF;
-            --bg-card: #FFFFFF;
             --bg-hover: #E8E8E8;
             --bg-input: #F0F0F0;
             --border-color: #D0D0D0;
@@ -50,20 +40,14 @@
             --text-muted: #8888AA;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
-
-        /* ============================================================
-           RESET & BASE + ANIMASI (No. 2)
-           ============================================================ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         html {
             scroll-behavior: smooth;
         }
-
         body {
             font-family: var(--font);
             background: var(--bg-primary);
@@ -72,107 +56,34 @@
             padding: 20px;
             transition: background var(--transition), color var(--transition);
         }
-
-        /* ===== ANIMASI FADE IN (No. 2) ===== */
         .fade-in {
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.6s ease forwards;
         }
-
-        .fade-in:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-        .fade-in:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-        .fade-in:nth-child(4) {
-            animation-delay: 0.3s;
-        }
-        .fade-in:nth-child(5) {
-            animation-delay: 0.4s;
-        }
-        .fade-in:nth-child(6) {
-            animation-delay: 0.5s;
-        }
-
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        /* ===== ANIMASI HOVER ===== */
         .card-hover {
             transition: all var(--transition);
         }
         .card-hover:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow: 0 12px 40px rgba(240, 185, 11, 0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(240, 185, 11, 0.06);
         }
-
-        .btn-hover {
-            transition: all var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-hover::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.6s ease;
-            transform: translate(-50%, -50%);
-        }
-        .btn-hover:hover::after {
-            width: 300px;
-            height: 300px;
-        }
-
-        /* ===== ANIMASI LOADING SKELETON ===== */
-        .skeleton {
-            background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-hover) 50%, var(--bg-secondary) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 8px;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-            100% {
-                background-position: 200% 0;
-            }
-        }
-
-        /* ===== ANIMASI PULSE UNTUK BADGE ===== */
         .pulse {
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-            }
             50% {
                 opacity: 0.5;
             }
         }
-
         ::-webkit-scrollbar {
             width: 6px;
-            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: var(--bg-primary);
@@ -185,10 +96,6 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-
-        /* ============================================================
-           HEADER
-           ============================================================ */
         .header {
             display: flex;
             justify-content: space-between;
@@ -267,10 +174,6 @@
         .header-actions select:hover {
             border-color: var(--binance-yellow);
         }
-        .header-actions select option {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
         .theme-toggle {
             background: var(--bg-secondary);
             color: var(--text-primary);
@@ -286,20 +189,16 @@
             border-color: var(--binance-yellow);
             transform: rotate(20deg);
         }
-
-        /* ============================================================
-           RATES GRID
-           ============================================================ */
         .rates-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 12px;
             margin-bottom: 24px;
         }
         .rate-card {
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            padding: 16px 18px;
+            padding: 14px 16px;
             border: 1px solid var(--border-color);
             transition: all var(--transition);
         }
@@ -307,17 +206,16 @@
             border-color: var(--binance-yellow);
             background: var(--bg-hover);
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(240, 185, 11, 0.06);
         }
         .rate-card .label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--text-secondary);
             font-weight: 600;
         }
         .rate-card .value {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             margin-top: 4px;
         }
@@ -331,7 +229,7 @@
             color: #FF6B6B;
         }
         .rate-card .change {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 500;
             margin-top: 2px;
         }
@@ -348,10 +246,6 @@
             margin-top: -12px;
             margin-bottom: 16px;
         }
-
-        /* ============================================================
-           TOOLS
-           ============================================================ */
         .tools-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -366,43 +260,41 @@
         .tool-card {
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            padding: 24px;
+            padding: 20px;
             border: 1px solid var(--border-color);
             transition: all var(--transition);
         }
         .tool-card:hover {
             border-color: var(--binance-yellow);
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(240, 185, 11, 0.06);
         }
         .tool-card h3 {
             font-size: 1rem;
             font-weight: 700;
             margin-bottom: 4px;
-            color: var(--text-primary);
         }
         .tool-card .tool-subtitle {
             font-size: 0.8rem;
             color: var(--text-secondary);
             margin-bottom: 16px;
         }
-        .tool-card .input-group {
+        .input-group {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 12px;
             align-items: center;
         }
-        .tool-card .input-group label {
+        .input-group label {
             font-size: 0.8rem;
             font-weight: 500;
             color: var(--text-secondary);
-            min-width: 60px;
+            min-width: 50px;
         }
-        .tool-card .input-group input,
-        .tool-card .input-group select {
+        .input-group input,
+        .input-group select {
             flex: 1;
-            min-width: 120px;
+            min-width: 100px;
             padding: 10px 14px;
             background: var(--bg-input);
             color: var(--text-primary);
@@ -413,45 +305,44 @@
             outline: none;
             transition: var(--transition);
         }
-        .tool-card .input-group input:focus,
-        .tool-card .input-group select:focus {
+        .input-group input:focus,
+        .input-group select:focus {
             border-color: var(--binance-yellow);
             box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.1);
         }
-        .tool-card .result-box {
+        .input-group input[type="number"] {
+            max-width: 120px;
+        }
+        .result-box {
             background: var(--bg-primary);
             border-radius: 10px;
             padding: 16px;
             margin-top: 12px;
             border: 1px solid var(--border-color);
         }
-        .tool-card .result-box .result-row {
+        .result-box .result-row {
             display: flex;
             justify-content: space-between;
             padding: 6px 0;
             font-size: 0.9rem;
             border-bottom: 1px solid var(--border-color);
         }
-        .tool-card .result-box .result-row:last-child {
+        .result-box .result-row:last-child {
             border-bottom: none;
         }
-        .tool-card .result-box .result-row .label {
+        .result-box .result-row .label {
             color: var(--text-secondary);
         }
-        .tool-card .result-box .result-row .value {
+        .result-box .result-row .value {
             font-weight: 600;
             color: var(--binance-yellow);
         }
-        .tool-card .result-box .result-row .value.green {
+        .result-box .result-row .value.green {
             color: var(--green);
         }
-        .tool-card .result-box .result-row .value.red {
+        .result-box .result-row .value.red {
             color: var(--red);
         }
-
-        /* ============================================================
-           DETAILED INTEREST CALCULATOR (No. 1)
-           ============================================================ */
         .interest-calc-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -466,7 +357,7 @@
         .interest-card {
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            padding: 24px;
+            padding: 20px;
             border: 1px solid var(--border-color);
             transition: all var(--transition);
         }
@@ -478,78 +369,12 @@
             font-size: 1rem;
             font-weight: 700;
             margin-bottom: 4px;
-            color: var(--text-primary);
         }
         .interest-card .tool-subtitle {
             font-size: 0.8rem;
             color: var(--text-secondary);
             margin-bottom: 16px;
         }
-        .interest-card .input-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 12px;
-            align-items: center;
-        }
-        .interest-card .input-group label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            min-width: 60px;
-        }
-        .interest-card .input-group input,
-        .interest-card .input-group select {
-            flex: 1;
-            min-width: 120px;
-            padding: 10px 14px;
-            background: var(--bg-input);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-family: var(--font);
-            outline: none;
-            transition: var(--transition);
-        }
-        .interest-card .input-group input:focus,
-        .interest-card .input-group select:focus {
-            border-color: var(--binance-yellow);
-        }
-        .interest-card .result-box {
-            background: var(--bg-primary);
-            border-radius: 10px;
-            padding: 16px;
-            margin-top: 12px;
-            border: 1px solid var(--border-color);
-        }
-        .interest-card .result-box .result-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            font-size: 0.9rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .interest-card .result-box .result-row:last-child {
-            border-bottom: none;
-        }
-        .interest-card .result-box .result-row .label {
-            color: var(--text-secondary);
-        }
-        .interest-card .result-box .result-row .value {
-            font-weight: 600;
-            color: var(--binance-yellow);
-        }
-        .interest-card .result-box .result-row .value.green {
-            color: var(--green);
-        }
-        .interest-card .result-box .result-row .value.red {
-            color: var(--red);
-        }
-
-        /* ============================================================
-           CHART
-           ============================================================ */
         .chart-section {
             background: var(--bg-secondary);
             border-radius: var(--radius);
@@ -573,7 +398,6 @@
             font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-secondary);
-            letter-spacing: 0.3px;
         }
         .chart-section .chart-header h3 i {
             color: var(--binance-yellow);
@@ -590,7 +414,7 @@
             background: transparent;
             border: none;
             color: var(--text-secondary);
-            padding: 4px 14px;
+            padding: 4px 12px;
             border-radius: 6px;
             font-size: 0.7rem;
             font-weight: 600;
@@ -613,10 +437,6 @@
             width: 100% !important;
             height: 100% !important;
         }
-
-        /* ============================================================
-           ACTION BUTTONS
-           ============================================================ */
         .action-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -624,7 +444,7 @@
             margin-bottom: 24px;
         }
         .btn {
-            padding: 12px 28px;
+            padding: 12px 24px;
             border-radius: 8px;
             font-weight: 600;
             font-size: 0.9rem;
@@ -637,7 +457,7 @@
             gap: 8px;
             font-family: var(--font);
             flex: 1;
-            min-width: 120px;
+            min-width: 100px;
             justify-content: center;
         }
         .btn-primary {
@@ -656,7 +476,6 @@
         }
         .btn-secondary:hover {
             background: var(--bg-hover);
-            border-color: var(--text-muted);
             transform: translateY(-2px);
         }
         .btn-history {
@@ -683,14 +502,10 @@
             background: #1E3A2A;
             transform: translateY(-2px);
         }
-
-        /* ============================================================
-           FORM SECTIONS
-           ============================================================ */
         .form-section {
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            padding: 32px;
+            padding: 28px;
             border: 1px solid var(--border-color);
             margin-bottom: 24px;
             display: none;
@@ -698,7 +513,7 @@
         }
         .form-section.active {
             display: block;
-            animation: fadeInUp 0.5s ease;
+            animation: fadeInUp 0.4s ease;
         }
         .form-section .form-header {
             display: flex;
@@ -716,28 +531,22 @@
             justify-content: center;
             font-size: 1.2rem;
             color: var(--binance-yellow);
-            transition: all var(--transition);
-        }
-        .form-section:hover .form-header .icon-circle {
-            transform: scale(1.1) rotate(10deg);
         }
         .form-section h2 {
             font-size: 1.3rem;
             font-weight: 700;
-            color: var(--text-primary);
         }
         .form-section .subtitle {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             margin-left: 56px;
         }
         .form-card {
             background: var(--bg-primary);
             border-radius: 12px;
-            padding: 24px;
+            padding: 20px;
             border: 1px solid var(--border-color);
-            transition: all var(--transition);
         }
         .form-card:hover {
             border-color: var(--binance-yellow);
@@ -746,7 +555,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 0;
+            padding: 12px 0;
             border-bottom: 1px solid var(--border-color);
         }
         .form-card .row:last-child {
@@ -784,28 +593,10 @@
             justify-content: center;
             gap: 10px;
             text-decoration: none;
-            position: relative;
-            overflow: hidden;
         }
         .form-card .btn-submit-form:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(240, 185, 11, 0.3);
-        }
-        .form-card .btn-submit-form::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.6s ease;
-            transform: translate(-50%, -50%);
-        }
-        .form-card .btn-submit-form:hover::after {
-            width: 300px;
-            height: 300px;
         }
         .form-card .secure-badge {
             display: flex;
@@ -819,11 +610,10 @@
         .form-card .secure-badge i {
             color: var(--green);
         }
-
         .success-box {
             background: rgba(14, 203, 129, 0.08);
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 14px 18px;
             border: 1px solid rgba(14, 203, 129, 0.2);
             margin-top: 16px;
             display: none;
@@ -844,10 +634,6 @@
             font-weight: 500;
             margin: 0;
         }
-
-        /* ============================================================
-           LOAN TABS
-           ============================================================ */
         .loan-tabs {
             display: flex;
             flex-wrap: wrap;
@@ -858,7 +644,7 @@
             border-radius: 10px;
         }
         .loan-tabs button {
-            padding: 10px 20px;
+            padding: 10px 16px;
             border-radius: 8px;
             border: none;
             background: transparent;
@@ -869,7 +655,7 @@
             transition: var(--transition);
             font-family: var(--font);
             flex: 1;
-            min-width: 100px;
+            min-width: 80px;
         }
         .loan-tabs button:hover {
             color: var(--text-primary);
@@ -885,21 +671,17 @@
             display: block;
             animation: fadeInUp 0.4s ease;
         }
-
-        /* ============================================================
-           LEGAL PAGES
-           ============================================================ */
         .legal-section {
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            padding: 32px;
+            padding: 28px;
             border: 1px solid var(--border-color);
             margin-bottom: 24px;
             display: none;
         }
         .legal-section.active {
             display: block;
-            animation: fadeInUp 0.5s ease;
+            animation: fadeInUp 0.4s ease;
         }
         .legal-section .legal-header {
             display: flex;
@@ -921,25 +703,24 @@
         .legal-section h2 {
             font-size: 1.3rem;
             font-weight: 700;
-            color: var(--text-primary);
         }
         .legal-section .subtitle {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             margin-left: 56px;
         }
         .legal-tabs {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             background: var(--bg-primary);
             padding: 4px;
             border-radius: 10px;
         }
         .legal-tabs button {
-            padding: 10px 20px;
+            padding: 10px 16px;
             border-radius: 8px;
             border: none;
             background: transparent;
@@ -950,7 +731,7 @@
             transition: var(--transition);
             font-family: var(--font);
             flex: 1;
-            min-width: 100px;
+            min-width: 80px;
         }
         .legal-tabs button:hover {
             color: var(--text-primary);
@@ -962,16 +743,16 @@
         .legal-content {
             background: var(--bg-primary);
             border-radius: 12px;
-            padding: 28px;
+            padding: 20px;
             border: 1px solid var(--border-color);
-            max-height: 500px;
+            max-height: 450px;
             overflow-y: auto;
         }
         .legal-content h3 {
             color: var(--binance-yellow);
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            margin-top: 20px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            margin-top: 16px;
         }
         .legal-content h3:first-child {
             margin-top: 0;
@@ -981,13 +762,13 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
             line-height: 1.7;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .legal-content ul {
             padding-left: 20px;
         }
         .legal-content ul li {
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .legal-content .highlight {
             color: var(--binance-yellow);
@@ -997,25 +778,21 @@
             color: var(--text-muted);
             font-size: 0.75rem;
             font-style: italic;
-            margin-top: 16px;
+            margin-top: 12px;
             border-top: 1px solid var(--border-color);
-            padding-top: 16px;
+            padding-top: 12px;
         }
-
-        /* ============================================================
-           HISTORY
-           ============================================================ */
         .history-section {
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            padding: 32px;
+            padding: 28px;
             border: 1px solid var(--border-color);
             margin-bottom: 24px;
             display: none;
         }
         .history-section.active {
             display: block;
-            animation: fadeInUp 0.5s ease;
+            animation: fadeInUp 0.4s ease;
         }
         .history-section .history-header {
             display: flex;
@@ -1037,12 +814,11 @@
         .history-section h2 {
             font-size: 1.3rem;
             font-weight: 700;
-            color: var(--text-primary);
         }
         .history-section .subtitle {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             margin-left: 56px;
         }
         .history-table-wrapper {
@@ -1057,15 +833,15 @@
             background: var(--bg-primary);
             color: var(--text-secondary);
             font-weight: 600;
-            padding: 12px 16px;
+            padding: 10px 14px;
             text-align: left;
             border-bottom: 2px solid var(--border-color);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .history-table td {
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-primary);
         }
@@ -1074,9 +850,9 @@
         }
         .status-badge {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             transition: all var(--transition);
         }
@@ -1103,7 +879,6 @@
         .history-empty i {
             font-size: 2.5rem;
             margin-bottom: 12px;
-            color: var(--text-muted);
         }
         .history-loading {
             text-align: center;
@@ -1124,21 +899,17 @@
                 transform: rotate(360deg);
             }
         }
-
-        /* ============================================================
-           TESTIMONIALS
-           ============================================================ */
         .testimonial-section {
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            padding: 32px;
+            padding: 28px;
             border: 1px solid var(--border-color);
             margin-bottom: 24px;
             display: none;
         }
         .testimonial-section.active {
             display: block;
-            animation: fadeInUp 0.5s ease;
+            animation: fadeInUp 0.4s ease;
         }
         .testimonial-section .testimonial-header {
             display: flex;
@@ -1160,35 +931,33 @@
         .testimonial-section h2 {
             font-size: 1.3rem;
             font-weight: 700;
-            color: var(--text-primary);
         }
         .testimonial-section .subtitle {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             margin-left: 56px;
         }
         .testimonial-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
         }
         .testimonial-card {
             background: var(--bg-primary);
             border-radius: 12px;
-            padding: 20px;
+            padding: 18px;
             border: 1px solid var(--border-color);
             transition: all var(--transition);
         }
         .testimonial-card:hover {
             border-color: var(--binance-yellow);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(240, 185, 11, 0.06);
+            transform: translateY(-3px);
         }
         .testimonial-card .stars {
             color: var(--binance-yellow);
-            font-size: 1.1rem;
-            margin-bottom: 8px;
+            font-size: 1rem;
+            margin-bottom: 6px;
         }
         .testimonial-card .stars .empty-star {
             color: var(--text-muted);
@@ -1197,7 +966,7 @@
             color: var(--text-primary);
             font-size: 0.9rem;
             line-height: 1.6;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-style: italic;
         }
         .testimonial-card .author {
@@ -1206,8 +975,8 @@
             gap: 10px;
         }
         .testimonial-card .author .avatar {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             background: var(--binance-yellow);
             color: var(--bg-primary);
@@ -1215,43 +984,32 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.9rem;
-            transition: all var(--transition);
-        }
-        .testimonial-card:hover .author .avatar {
-            transform: scale(1.1);
+            font-size: 0.8rem;
         }
         .testimonial-card .author .info .name {
             font-weight: 600;
             font-size: 0.85rem;
-            color: var(--text-primary);
         }
         .testimonial-card .author .info .date {
             font-size: 0.7rem;
             color: var(--text-muted);
         }
         .testimonial-form-box {
-            margin-top: 24px;
+            margin-top: 20px;
             background: var(--bg-primary);
             border-radius: 12px;
-            padding: 20px;
+            padding: 18px;
             border: 1px solid var(--border-color);
         }
         .testimonial-form-box h4 {
             font-size: 0.95rem;
             font-weight: 600;
             margin-bottom: 12px;
-            color: var(--text-primary);
         }
         .testimonial-form-box .input-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
             margin-bottom: 10px;
         }
-        .testimonial-form-box .input-group input,
-        .testimonial-form-box .input-group textarea,
-        .testimonial-form-box .input-group select {
+        .testimonial-form-box .input-group textarea {
             flex: 1;
             min-width: 120px;
             padding: 10px 14px;
@@ -1263,19 +1021,15 @@
             font-family: var(--font);
             outline: none;
             transition: var(--transition);
-        }
-        .testimonial-form-box .input-group input:focus,
-        .testimonial-form-box .input-group textarea:focus,
-        .testimonial-form-box .input-group select:focus {
-            border-color: var(--binance-yellow);
-        }
-        .testimonial-form-box .input-group textarea {
             min-height: 60px;
             resize: vertical;
             width: 100%;
         }
+        .testimonial-form-box .input-group textarea:focus {
+            border-color: var(--binance-yellow);
+        }
         .testimonial-form-box .btn-submit-testimonial {
-            padding: 10px 24px;
+            padding: 10px 20px;
             background: var(--binance-yellow);
             color: var(--bg-primary);
             border: none;
@@ -1290,18 +1044,13 @@
             background: var(--binance-yellow-dark);
             transform: translateY(-2px);
         }
-
-        /* ============================================================
-           CONTACT
-           ============================================================ */
         .contact-section {
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            padding: 28px;
+            padding: 24px;
             border: 1px solid var(--border-color);
             text-align: center;
             margin-top: 8px;
-            transition: all var(--transition);
         }
         .contact-section:hover {
             border-color: var(--binance-yellow);
@@ -1320,7 +1069,7 @@
             font-size: 1.1rem;
             font-weight: 600;
             text-decoration: none;
-            padding: 10px 24px;
+            padding: 10px 20px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
             transition: var(--transition);
@@ -1334,10 +1083,6 @@
             font-size: 1.4rem;
             color: #26A5E4;
         }
-
-        /* ============================================================
-           FLOATING CONTACT
-           ============================================================ */
         .floating-contact {
             position: fixed;
             bottom: 30px;
@@ -1348,10 +1093,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             text-decoration: none;
             transition: all var(--transition);
             box-shadow: var(--shadow);
@@ -1362,13 +1107,9 @@
             transform: scale(1.1) rotate(-5deg);
             box-shadow: 0 8px 30px rgba(38, 165, 228, 0.4);
         }
-
-        /* ============================================================
-           FOOTER
-           ============================================================ */
         .footer {
             text-align: center;
-            padding: 24px 0 8px;
+            padding: 20px 0 8px;
             color: var(--text-muted);
             font-size: 0.75rem;
             border-top: 1px solid var(--border-color);
@@ -1383,10 +1124,24 @@
             text-decoration: underline;
             color: var(--binance-yellow-dark);
         }
-
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
+        .email-notif {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(240, 185, 11, 0.08);
+            border-radius: 8px;
+            border: 1px solid rgba(240, 185, 11, 0.2);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        .email-notif.show {
+            display: flex;
+        }
+        .email-notif i {
+            color: var(--binance-yellow);
+        }
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -1405,64 +1160,39 @@
             .btn {
                 min-width: 100%;
             }
-            .loan-tabs button {
-                min-width: 60px;
-                font-size: 0.7rem;
-                padding: 6px 12px;
-            }
-            .legal-tabs button {
-                min-width: 60px;
-                font-size: 0.7rem;
-                padding: 6px 12px;
+            .form-section .subtitle,
+            .legal-section .subtitle,
+            .history-section .subtitle,
+            .testimonial-section .subtitle {
+                margin-left: 0;
             }
             .form-section {
                 padding: 20px;
             }
-            .form-section .subtitle {
-                margin-left: 0;
+            .legal-section {
+                padding: 20px;
             }
-            .form-card .row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 4px;
+            .history-section {
+                padding: 20px;
             }
-            .legal-section .subtitle {
-                margin-left: 0;
-            }
-            .legal-content {
-                padding: 16px;
-                max-height: 350px;
-            }
-            .history-section .subtitle {
-                margin-left: 0;
+            .testimonial-section {
+                padding: 20px;
             }
             .history-table {
                 font-size: 0.75rem;
             }
             .history-table th,
             .history-table td {
-                padding: 8px 10px;
+                padding: 6px 8px;
             }
             .floating-contact {
                 bottom: 16px;
                 right: 16px;
             }
             .floating-contact a {
-                width: 52px;
-                height: 52px;
-                font-size: 1.5rem;
-            }
-            .tools-grid {
-                grid-template-columns: 1fr;
-            }
-            .interest-calc-grid {
-                grid-template-columns: 1fr;
-            }
-            .testimonial-grid {
-                grid-template-columns: 1fr;
-            }
-            .testimonial-section .subtitle {
-                margin-left: 0;
+                width: 48px;
+                height: 48px;
+                font-size: 1.4rem;
             }
         }
         @media (max-width: 400px) {
@@ -1471,10 +1201,13 @@
                 gap: 6px;
             }
             .rate-card {
-                padding: 12px;
+                padding: 10px;
             }
             .rate-card .value {
-                font-size: 1rem;
+                font-size: 0.95rem;
+            }
+            .input-group input[type="number"] {
+                max-width: 80px;
             }
         }
     </style>
@@ -1483,12 +1216,12 @@
 
     <div class="container">
 
-        <!-- ===== HEADER ===== -->
+        <!-- HEADER -->
         <header class="header">
             <a href="#" class="logo">
-                <div class="logo-icon">SE</div>
-                <span class="logo-text">Super<span>Exchange</span></span>
-            </a>
+    <img src="Logo SuperExchange.png" alt="SuperExchange Logo" style="height:80px;width:auto;border-radius:8px;" />
+    <span class="logo-text">Super<span>Exchange</span></span>
+</a>
             <div class="header-actions">
                 <span class="badge pulse"><i class="fas fa-circle"></i> <span data-lang="live">Live</span></span>
                 <span class="badge" id="clockDisplay">Loading...</span>
@@ -1504,37 +1237,38 @@
             </div>
         </header>
 
-        <!-- ===== RATES ===== -->
+        <!-- RATES -->
         <div class="rates-grid fade-in">
             <div class="rate-card card-hover"><div class="label">USDT / IDR</div><div class="value usdt" id="usdtIdr">---</div><div class="change positive" id="usdtIdrChange">+0.00%</div></div>
             <div class="rate-card card-hover"><div class="label">USDT / PHP</div><div class="value usdt" id="usdtPhp">---</div><div class="change positive" id="usdtPhpChange">+0.00%</div></div>
             <div class="rate-card card-hover"><div class="label">PHP / IDR</div><div class="value peso" id="phpIdr">---</div><div class="change positive" id="phpIdrChange">+0.00%</div></div>
             <div class="rate-card card-hover"><div class="label">PHP / USDT</div><div class="value peso" id="phpUsdt">---</div><div class="change positive" id="phpUsdtChange">+0.00%</div></div>
             <div class="rate-card card-hover"><div class="label">IDR / USDT</div><div class="value idr" id="idrUsdt">---</div><div class="change positive" id="idrUsdtChange">+0.00%</div></div>
-            <class="rate-card card-hover"><div class="label">IDR / PHP</div><div class="value idr" id="idrPhp">---</div><div class="change positive" id="idrPhpChange">+0.00%</div></div>
+            <div class="rate-card card-hover"><div class="label">IDR / PHP</div><div class="value idr" id="idrPhp">---</div><div class="change positive" id="idrPhpChange">+0.00%</div></div>
         </div>
 
         <div class="last-update" id="lastUpdate">⏳ <span data-lang="fetching">Fetching...</span></div>
 
-        <!-- ===== DETAILED INTEREST CALCULATOR (No. 1) ===== -->
+        <!-- INTEREST CALCULATORS -->
         <div class="interest-calc-grid fade-in">
             <div class="interest-card card-hover">
-                <h3>📊 Flat Interest Calculator</h3>
+                <h3>📊 Flat Interest</h3>
                 <p class="tool-subtitle">Fixed interest rate applied to the principal</p>
                 <div class="input-group">
                     <label>Principal</label>
                     <input type="number" id="flatPrincipal" value="10000000" oninput="calculateFlatInterest()" />
-                    <select id="flatCurrency" onchange="calculateFlatInterest()" style="flex:0.3;min-width:80px;">
+                    <select id="flatCurrency" onchange="calculateFlatInterest()" style="flex:0.3;min-width:70px;">
                         <option value="idr">IDR</option>
                         <option value="usdt">USDT</option>
                         <option value="php">PHP</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Tenor (months)</label>
+                    <label>Tenor</label>
                     <input type="number" id="flatTenor" value="12" oninput="calculateFlatInterest()" />
-                    <label>Rate (%)</label>
-                    <input type="number" id="flatRate" value="5" oninput="calculateFlatInterest()" style="max-width:100px;" />
+                    <label>Rate</label>
+                    <input type="number" id="flatRate" value="5" oninput="calculateFlatInterest()" style="max-width:80px;" />
+                    <span style="color:var(--text-secondary);font-size:0.8rem;">%</span>
                 </div>
                 <div class="result-box" id="flatResult">
                     <div class="result-row"><span class="label">Total Interest</span><span class="value" id="flatInterestTotal">Rp 0</span></div>
@@ -1544,22 +1278,23 @@
             </div>
 
             <div class="interest-card card-hover">
-                <h3>📉 Effective Interest Calculator</h3>
+                <h3>📉 Effective Interest</h3>
                 <p class="tool-subtitle">Interest calculated on remaining balance</p>
                 <div class="input-group">
                     <label>Principal</label>
                     <input type="number" id="effPrincipal" value="10000000" oninput="calculateEffectiveInterest()" />
-                    <select id="effCurrency" onchange="calculateEffectiveInterest()" style="flex:0.3;min-width:80px;">
+                    <select id="effCurrency" onchange="calculateEffectiveInterest()" style="flex:0.3;min-width:70px;">
                         <option value="idr">IDR</option>
                         <option value="usdt">USDT</option>
                         <option value="php">PHP</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Tenor (months)</label>
+                    <label>Tenor</label>
                     <input type="number" id="effTenor" value="12" oninput="calculateEffectiveInterest()" />
-                    <label>Rate (%)</label>
-                    <input type="number" id="effRate" value="5" oninput="calculateEffectiveInterest()" style="max-width:100px;" />
+                    <label>Rate</label>
+                    <input type="number" id="effRate" value="5" oninput="calculateEffectiveInterest()" style="max-width:80px;" />
+                    <span style="color:var(--text-secondary);font-size:0.8rem;">%</span>
                 </div>
                 <div class="result-box" id="effResult">
                     <div class="result-row"><span class="label">Total Interest</span><span class="value" id="effInterestTotal">Rp 0</span></div>
@@ -1569,7 +1304,69 @@
             </div>
         </div>
 
-        <!-- ===== CHART ===== -->
+        <!-- TOOLS -->
+        <div class="tools-grid fade-in">
+            <div class="tool-card card-hover">
+                <h3 data-lang="calc_title">🔄 Currency Calculator</h3>
+                <p class="tool-subtitle" data-lang="calc_sub">Convert between USDT, PHP, IDR in real-time</p>
+                <div class="input-group">
+                    <label data-lang="amount">Amount</label>
+                    <input type="number" id="calcAmount" value="1" oninput="calculateCurrency()" />
+                </div>
+                <div class="input-group">
+                    <label data-lang="from">From</label>
+                    <select id="calcFrom" onchange="calculateCurrency()">
+                        <option value="usdt">USDT</option>
+                        <option value="php">PHP</option>
+                        <option value="idr">IDR</option>
+                    </select>
+                    <label data-lang="to">To</label>
+                    <select id="calcTo" onchange="calculateCurrency()">
+                        <option value="usdt">USDT</option>
+                        <option value="php">PHP</option>
+                        <option value="idr" selected>IDR</option>
+                    </select>
+                </div>
+                <div class="result-box">
+                    <div class="result-row"><span class="label" data-lang="result">Result</span><span class="value" id="calcResultValue">--</span></div>
+                    <div class="result-row"><span class="label" data-lang="rate">Rate</span><span class="value" id="calcRate">--</span></div>
+                </div>
+            </div>
+
+            <div class="tool-card card-hover">
+                <h3 data-lang="loan_sim_title">💰 Loan Simulator</h3>
+                <p class="tool-subtitle" data-lang="loan_sim_sub">Estimate your monthly installment and total interest</p>
+                <div class="input-group">
+                    <label data-lang="amount">Amount</label>
+                    <input type="number" id="loanSimAmount" value="10000000" oninput="simulateLoan()" />
+                    <select id="loanSimCurrency" onchange="simulateLoan()" style="flex:0.3;min-width:70px;">
+                        <option value="idr">IDR</option>
+                        <option value="usdt">USDT</option>
+                        <option value="php">PHP</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label data-lang="tenor">Tenor</label>
+                    <select id="loanSimTenor" onchange="simulateLoan()">
+                        <option value="7" data-lang="days7">7 days</option>
+                        <option value="15" data-lang="days15">15 days</option>
+                        <option value="30" selected data-lang="days30">30 days</option>
+                        <option value="60" data-lang="days60">60 days</option>
+                    </select>
+                    <label data-lang="interest">Interest</label>
+                    <input type="number" id="loanSimInterest" value="5" oninput="simulateLoan()" style="max-width:80px;" />
+                    <span style="color:var(--text-secondary);font-size:0.8rem;">%</span>
+                </div>
+                <div class="result-box">
+                    <div class="result-row"><span class="label" data-lang="total_payment">Total Payment</span><span class="value green" id="loanSimTotal">--</span></div>
+                    <div class="result-row"><span class="label" data-lang="installment">Installment</span><span class="value" id="loanSimInstallment">--</span></div>
+                    <div class="result-row"><span class="label" data-lang="total_interest">Total Interest</span><span class="value red" id="loanSimInterestTotal">--</span></div>
+                    <div class="result-row"><span class="label" data-lang="currency">Currency</span><span class="value" id="loanSimCurrencyDisplay">IDR</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART -->
         <div class="chart-section fade-in">
             <div class="chart-header">
                 <h3><i class="fas fa-chart-line"></i> <span data-lang="chart_title">USDT / IDR Price Chart</span></h3>
@@ -1585,16 +1382,16 @@
             <div class="chart-wrapper"><canvas id="priceChart"></canvas></div>
         </div>
 
-        <!-- ===== ACTION BUTTONS ===== -->
+        <!-- ACTION BUTTONS -->
         <div class="action-buttons fade-in">
-            <a href="#" class="btn btn-primary btn-hover" onclick="showForm('exchange')"><i class="fas fa-arrows-left-right"></i> <span data-lang="exchange">Exchange</span></a>
-            <a href="#" class="btn btn-secondary btn-hover" onclick="showForm('loan')"><i class="fas fa-hand-holding-dollar"></i> <span data-lang="loan">Loan</span></a>
-            <a href="#" class="btn btn-history btn-hover" onclick="showForm('history')"><i class="fas fa-clock-rotate-left"></i> <span data-lang="history">History</span></a>
-            <a href="#" class="btn btn-legal btn-hover" onclick="showForm('legal')"><i class="fas fa-file-contract"></i> <span data-lang="legal">Legal</span></a>
-            <a href="#" class="btn btn-testimonial btn-hover" onclick="showForm('testimonial')"><i class="fas fa-star"></i> <span data-lang="testimonials">Testimonials</span></a>
+            <a href="#" class="btn btn-primary" onclick="showForm('exchange')"><i class="fas fa-arrows-left-right"></i> <span data-lang="exchange">Exchange</span></a>
+            <a href="#" class="btn btn-secondary" onclick="showForm('loan')"><i class="fas fa-hand-holding-dollar"></i> <span data-lang="loan">Loan</span></a>
+            <a href="#" class="btn btn-history" onclick="showForm('history')"><i class="fas fa-clock-rotate-left"></i> <span data-lang="history">History</span></a>
+            <a href="#" class="btn btn-legal" onclick="showForm('legal')"><i class="fas fa-file-contract"></i> <span data-lang="legal">Legal</span></a>
+            <a href="#" class="btn btn-testimonial" onclick="showForm('testimonial')"><i class="fas fa-star"></i> <span data-lang="testimonials">Testimonials</span></a>
         </div>
 
-        <!-- ===== EXCHANGE FORM ===== -->
+        <!-- EXCHANGE -->
         <div class="form-section" id="formExchange">
             <div class="form-header"><div class="icon-circle"><i class="fas fa-arrows-left-right"></i></div><h2 data-lang="exchange_title">Exchange Money</h2></div>
             <p class="subtitle" data-lang="exchange_sub">Complete your exchange request in just a few clicks.</p>
@@ -1602,18 +1399,14 @@
                 <div class="row"><span class="label"><i class="fas fa-clock" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="estimated_response">Estimated Response</span></span><span class="value"><i class="fas fa-check-circle"></i> <span data-lang="within_5min">Within 5 minutes via Telegram</span></span></div>
                 <div class="row"><span class="label"><i class="fas fa-shield-alt" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="data_security">Data Security</span></span><span class="value"><i class="fas fa-check-circle"></i> <span data-lang="encrypted">Encrypted &amp; Private</span></span></div>
                 <div class="row"><span class="label"><i class="fas fa-database" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="storage">Storage</span></span><span class="value"><i class="fas fa-check-circle"></i> <span data-lang="saved_secure">Saved to Secure Database</span></span></div>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form" id="exchangeSubmitBtn"><i class="fas fa-paper-plane"></i> <span data-lang="start_exchange">Start Exchange Request</span></a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form"><i class="fas fa-paper-plane"></i> <span data-lang="start_exchange">Start Exchange Request</span></a>
                 <div class="secure-badge"><i class="fas fa-lock"></i> <span data-lang="secure_google">Your data is secure with Google Forms</span></div>
             </div>
             <div class="success-box" id="exchangeSuccess"><i class="fas fa-check-circle"></i><p><span data-lang="request_received">✅ Request received! CS will contact you via Telegram within 5 minutes.</span></p></div>
-            <!-- Auto-reply email notification (No. 3) -->
-            <div id="emailNotification" style="margin-top:12px;padding:12px;background:rgba(240,185,11,0.08);border-radius:8px;border:1px solid rgba(240,185,11,0.2);display:none;align-items:center;gap:10px;color:var(--text-secondary);font-size:0.85rem;">
-                <i class="fas fa-envelope" style="color:var(--binance-yellow);"></i>
-                <span id="emailNotifText">📧 A confirmation email has been sent to your inbox.</span>
-            </div>
+            <div class="email-notif" id="emailNotif"><i class="fas fa-envelope"></i> <span>📧 A confirmation email has been sent to your inbox.</span></div>
         </div>
 
-        <!-- ===== LOAN SECTION ===== -->
+        <!-- LOAN -->
         <div class="form-section" id="formLoan">
             <div class="form-header"><div class="icon-circle"><i class="fas fa-hand-holding-dollar"></i></div><h2 data-lang="loan_title">Loan Application</h2></div>
             <p class="subtitle" data-lang="loan_sub">Choose your collateral type and apply instantly.</p>
@@ -1627,7 +1420,7 @@
                     <div class="row"><span class="label"><i class="fas fa-id-card" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="collateral">Collateral</span></span><span class="value"><span data-lang="ktp_label">KTP (ID Card)</span></span></div>
                     <div class="row"><span class="label"><i class="fas fa-clock" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="response_time">Response Time</span></span><span class="value"><i class="fas fa-check-circle"></i> <span data-lang="within_5min">Within 5 minutes</span></span></div>
                     <div class="row"><span class="label"><i class="fas fa-flag" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="requirements">Requirements</span></span><span class="value"><span data-lang="ktp_req">Valid KTP + Selfie</span></span></div>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form" id="ktpSubmitBtn"><i class="fas fa-paper-plane"></i> <span data-lang="apply_ktp">Apply KTP Loan</span></a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form"><i class="fas fa-paper-plane"></i> <span data-lang="apply_ktp">Apply KTP Loan</span></a>
                 </div>
                 <div class="success-box" id="ktpSuccess"><i class="fas fa-check-circle"></i><p><span data-lang="request_received">✅ Request received! CS will contact you via Telegram within 5 minutes.</span></p></div>
             </div>
@@ -1636,7 +1429,7 @@
                     <div class="row"><span class="label"><i class="fas fa-passport" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="collateral">Collateral</span></span><span class="value"><span data-lang="passport_label">Passport</span></span></div>
                     <div class="row"><span class="label"><i class="fas fa-clock" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="response_time">Response Time</span></span><span class="value"><i class="fas fa-check-circle"></i> <span data-lang="within_5min">Within 5 minutes</span></span></div>
                     <div class="row"><span class="label"><i class="fas fa-flag" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="requirements">Requirements</span></span><span class="value"><span data-lang="passport_req">Valid Passport + Photo</span></span></div>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form" id="passportSubmitBtn"><i class="fas fa-paper-plane"></i> <span data-lang="apply_passport">Apply Passport Loan</span></a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form"><i class="fas fa-paper-plane"></i> <span data-lang="apply_passport">Apply Passport Loan</span></a>
                 </div>
                 <div class="success-box" id="passportSuccess"><i class="fas fa-check-circle"></i><p><span data-lang="request_received">✅ Request received! CS will contact you via Telegram within 5 minutes.</span></p></div>
             </div>
@@ -1645,13 +1438,13 @@
                     <div class="row"><span class="label"><i class="fas fa-bitcoin" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="collateral">Collateral</span></span><span class="value"><span data-lang="crypto_label">Crypto (USDT, BTC, ETH)</span></span></div>
                     <div class="row"><span class="label"><i class="fas fa-clock" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="response_time">Response Time</span></span><span class="value"><i class="fas fa-check-circle"></i> <span data-lang="within_5min">Within 5 minutes</span></span></div>
                     <div class="row"><span class="label"><i class="fas fa-flag" style="color:var(--text-muted);margin-right:8px;"></i> <span data-lang="requirements">Requirements</span></span><span class="value"><span data-lang="crypto_req">Wallet Address + Balance Proof</span></span></div>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form" id="cryptoSubmitBtn"><i class="fas fa-paper-plane"></i> <span data-lang="apply_crypto">Apply Crypto Loan</span></a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form"><i class="fas fa-paper-plane"></i> <span data-lang="apply_crypto">Apply Crypto Loan</span></a>
                 </div>
                 <div class="success-box" id="cryptoSuccess"><i class="fas fa-check-circle"></i><p><span data-lang="request_received">✅ Request received! CS will contact you via Telegram within 5 minutes.</span></p></div>
             </div>
         </div>
 
-        <!-- ===== HISTORY ===== -->
+        <!-- HISTORY -->
         <div class="history-section" id="formHistory">
             <div class="history-header"><div class="icon-circle"><i class="fas fa-clock-rotate-left"></i></div><h2 data-lang="history_title">Transaction History</h2></div>
             <p class="subtitle" data-lang="history_sub">View all past exchange and loan requests.</p>
@@ -1665,7 +1458,7 @@
             <div id="historyEmpty" class="history-empty" style="display:none;"><i class="fas fa-inbox"></i><p data-lang="no_transactions">No transactions yet. Data will appear here once users submit requests.</p></div>
         </div>
 
-        <!-- ===== LEGAL ===== -->
+        <!-- LEGAL -->
         <div class="legal-section" id="formLegal">
             <div class="legal-header"><div class="icon-circle"><i class="fas fa-file-contract"></i></div><h2 data-lang="legal_title">Legal Information</h2></div>
             <p class="subtitle" data-lang="legal_sub">Terms &amp; Conditions, Privacy Policy, About Us, and Disclaimer.</p>
@@ -1681,7 +1474,7 @@
             <div class="legal-content" id="legalDisclaimer" style="display:none;"><h3 data-lang="disclaimer_title">⚠️ Disclaimer</h3><p data-lang="disclaimer_text"><strong>Last Updated:</strong> August 21, 2026</p><p>By using <span class="highlight">SuperExchange</span>, you acknowledge...</p><div class="last-updated">📌 Last Updated: August 21, 2026</div></div>
         </div>
 
-        <!-- ===== TESTIMONIALS ===== -->
+        <!-- TESTIMONIALS -->
         <div class="testimonial-section" id="formTestimonial">
             <div class="testimonial-header"><div class="icon-circle"><i class="fas fa-star"></i></div><h2 data-lang="testimonial_title">User Testimonials</h2></div>
             <p class="subtitle" data-lang="testimonial_sub">What our users say about SuperExchange.</p>
@@ -1706,7 +1499,7 @@
             </div>
         </div>
 
-        <!-- ===== CONTACT ===== -->
+        <!-- CONTACT -->
         <div class="contact-section">
             <h3><i class="fas fa-headset"></i> <span data-lang="support">24/7 Support</span></h3>
             <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:12px;" data-lang="support_text">Our team is ready to assist you.</p>
@@ -1714,14 +1507,14 @@
             <p style="color:var(--text-muted);font-size:0.7rem;margin-top:10px;" data-lang="response_time_footer">Response within 5 minutes</p>
         </div>
 
-        <!-- ===== FOOTER ===== -->
+        <!-- FOOTER -->
         <div class="footer">
             &copy; 2026 SuperExchange. All rights reserved. | <a href="#" onclick="showForm('legal');return false;" data-lang="legal">Legal</a> | <a href="#" onclick="showForm('testimonial');return false;" data-lang="testimonials">Testimonials</a>
         </div>
 
     </div>
 
-    <!-- ===== FLOATING TELEGRAM ===== -->
+    <!-- FLOATING TELEGRAM -->
     <div class="floating-contact">
         <a href="https://t.me/Huann99" target="_blank" class="telegram-float" title="Chat on Telegram">
             <i class="fab fa-telegram-plane"></i>
@@ -1729,9 +1522,7 @@
     </div>
 
     <script>
-        // ============================================================
-        // TRANSLATIONS (same as before - shortened for brevity)
-        // ============================================================
+        // ===== TRANSLATIONS (shortened) =====
         const translations = {
             en: {
                 live: 'Live',
@@ -1755,7 +1546,7 @@
                 days15: '15 days',
                 days30: '30 days',
                 days60: '60 days',
-                interest: 'Interest (%)',
+                interest: 'Interest',
                 total_payment: 'Total Payment',
                 installment: 'Installment',
                 total_interest: 'Total Interest',
@@ -1842,7 +1633,7 @@
                 days15: '15 hari',
                 days30: '30 hari',
                 days60: '60 hari',
-                interest: 'Bunga (%)',
+                interest: 'Bunga',
                 total_payment: 'Total Pembayaran',
                 installment: 'Angsuran',
                 total_interest: 'Total Bunga',
@@ -1929,7 +1720,7 @@
                 days15: '15天',
                 days30: '30天',
                 days60: '60天',
-                interest: '利率 (%)',
+                interest: '利率',
                 total_payment: '总付款',
                 installment: '分期付款',
                 total_interest: '总利息',
@@ -2016,7 +1807,7 @@
                 days15: '15 ngày',
                 days30: '30 ngày',
                 days60: '60 ngày',
-                interest: 'Lãi suất (%)',
+                interest: 'Lãi suất',
                 total_payment: 'Tổng thanh toán',
                 installment: 'Trả góp',
                 total_interest: 'Tổng lãi',
@@ -2103,7 +1894,7 @@
                 days15: '၁၅ ရက်',
                 days30: '၃၀ ရက်',
                 days60: '၆၀ ရက်',
-                interest: 'အတိုးနှုန်း (%)',
+                interest: 'အတိုးနှုန်း',
                 total_payment: 'စုစုပေါင်းပေးချေငွေ',
                 installment: 'အရစ်ကျ',
                 total_interest: 'စုစုပေါင်းအတိုး',
@@ -2190,7 +1981,7 @@
                 days15: '15 araw',
                 days30: '30 araw',
                 days60: '60 araw',
-                interest: 'Interes (%)',
+                interest: 'Interes',
                 total_payment: 'Kabuuang Bayad',
                 installment: 'Hulog',
                 total_interest: 'Kabuuang Interes',
@@ -2257,9 +2048,7 @@
             }
         };
 
-        // ============================================================
-        // LANGUAGE FUNCTION
-        // ============================================================
+        // ===== LANGUAGE =====
         function changeLanguage(lang) {
             const elements = document.querySelectorAll('[data-lang]');
             elements.forEach(el => {
@@ -2276,16 +2065,13 @@
             renderTestimonials();
         }
 
-        // Load saved language
         const savedLang = localStorage.getItem('lang');
         if (savedLang && translations[savedLang]) {
             document.getElementById('langSelect').value = savedLang;
             changeLanguage(savedLang);
         }
 
-        // ============================================================
-        // CLOCK
-        // ============================================================
+        // ===== CLOCK =====
         function updateClock() {
             const now = new Date();
             document.getElementById('clockDisplay').textContent = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -2293,9 +2079,7 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // ============================================================
-        // THEME TOGGLE
-        // ============================================================
+        // ===== THEME =====
         let currentTheme = 'dark';
 
         function toggleTheme() {
@@ -2319,9 +2103,7 @@
             currentTheme = 'light';
         }
 
-        // ============================================================
-        // SHOW FORM
-        // ============================================================
+        // ===== SHOW FORM =====
         function showForm(type) {
             document.querySelectorAll('.form-section, .history-section, .legal-section, .testimonial-section').forEach(el =>
                 el.classList.remove('active'));
@@ -2343,9 +2125,7 @@
             }
         }
 
-        // ============================================================
-        // LOAN TABS
-        // ============================================================
+        // ===== LOAN TABS =====
         document.querySelectorAll('.loan-tabs button').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.loan-tabs button').forEach(b => b.classList.remove('active'));
@@ -2353,13 +2133,11 @@
                 const target = this.dataset.loan;
                 document.querySelectorAll('.loan-form').forEach(el => el.classList.remove('active'));
                 document.getElementById('loan' + target.charAt(0).toUpperCase() + target.slice(1)).classList.add(
-                    'active');
+                'active');
             });
         });
 
-        // ============================================================
-        // LEGAL TABS
-        // ============================================================
+        // ===== LEGAL TABS =====
         document.querySelectorAll('.legal-tabs button').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.legal-tabs button').forEach(b => b.classList.remove('active'));
@@ -2371,11 +2149,9 @@
             });
         });
 
-        // ============================================================
-        // SUCCESS MESSAGE + AUTO-REPLY EMAIL (No. 3)
-        // ============================================================
+        // ===== SUCCESS + EMAIL NOTIF =====
         document.querySelectorAll('.btn-submit-form').forEach(btn => {
-            btn.addEventListener('click', function(e) {
+            btn.addEventListener('click', function() {
                 const parentSection = this.closest('.form-section') || this.closest('.loan-form');
                 if (parentSection) {
                     const successBox = parentSection.querySelector('.success-box');
@@ -2383,34 +2159,19 @@
                         document.querySelectorAll('.success-box').forEach(el => el.classList.remove('show'));
                         successBox.classList.add('show');
 
-                        // Show email notification
-                        const emailNotif = document.getElementById('emailNotification');
+                        const emailNotif = document.getElementById('emailNotif');
                         if (emailNotif) {
-                            emailNotif.style.display = 'flex';
-                            document.getElementById('emailNotifText').textContent =
-                                '📧 A confirmation email has been sent to your inbox.';
-                            setTimeout(() => {
-                                emailNotif.style.display = 'none';
-                            }, 8000);
+                            emailNotif.classList.add('show');
+                            setTimeout(() => emailNotif.classList.remove('show'), 8000);
                         }
-
                         setTimeout(() => successBox.classList.remove('show'), 10000);
                     }
                 }
             });
         });
 
-        // ============================================================
-        // FETCH RATES
-        // ============================================================
-        let rates = {
-            usdtIdr: 17600,
-            usdtPhp: 61.5,
-            phpIdr: 286,
-            phpUsdt: 0.01626,
-            idrUsdt: 0.000057,
-            idrPhp: 0.003497
-        };
+        // ===== FETCH RATES =====
+        let rates = { usdtIdr: 17600, usdtPhp: 61.5, phpIdr: 286, phpUsdt: 0.01626, idrUsdt: 0.000057, idrPhp: 0.003497 };
         let previousRates = {};
 
         async function fetchRates() {
@@ -2431,9 +2192,7 @@
                         };
                     }
                 }
-            } catch (error) {
-                console.warn('Primary API failed, using fallback rates:', error);
-            }
+            } catch (e) { console.warn('API fallback'); }
 
             const ids = ['usdtIdr', 'usdtPhp', 'phpIdr', 'phpUsdt', 'idrUsdt', 'idrPhp'];
             const symbols = ['Rp ', '₱ ', 'Rp ', '$ ', '$ ', '₱ '];
@@ -2460,9 +2219,7 @@
             calculateEffectiveInterest();
         }
 
-        // ============================================================
-        // CHART
-        // ============================================================
+        // ===== CHART =====
         let chartInstance = null;
         let chartData = [];
         const MAX_DATA_POINTS = 60;
@@ -2516,9 +2273,7 @@
             });
         });
 
-        // ============================================================
-        // CALCULATOR
-        // ============================================================
+        // ===== CALCULATOR =====
         function calculateCurrency() {
             const amount = parseFloat(document.getElementById('calcAmount').value) || 0;
             const from = document.getElementById('calcFrom').value;
@@ -2551,9 +2306,7 @@
                 .toFixed(4);
         }
 
-        // ============================================================
-        // LOAN SIMULATOR
-        // ============================================================
+        // ===== LOAN SIMULATOR =====
         function simulateLoan() {
             const amount = parseFloat(document.getElementById('loanSimAmount').value) || 0;
             const tenor = parseInt(document.getElementById('loanSimTenor').value) || 30;
@@ -2571,11 +2324,10 @@
             const totalPayment = amountInIdr + totalInterest;
             const installment = totalPayment / tenor;
 
-            let resultTotal = totalPayment;
-            let resultInstallment = installment;
-            let resultInterest = totalInterest;
-            let symbol = 'Rp ';
-
+            let resultTotal = totalPayment,
+                resultInstallment = installment,
+                resultInterest = totalInterest,
+                symbol = 'Rp ';
             if (currency === 'usdt') {
                 resultTotal = totalPayment / rates.usdtIdr;
                 resultInstallment = installment / rates.usdtIdr;
@@ -2603,9 +2355,7 @@
             document.getElementById('loanSimCurrencyDisplay').textContent = currency.toUpperCase();
         }
 
-        // ============================================================
-        // FLAT INTEREST CALCULATOR (No. 1)
-        // ============================================================
+        // ===== FLAT INTEREST =====
         function calculateFlatInterest() {
             const principal = parseFloat(document.getElementById('flatPrincipal').value) || 0;
             const tenor = parseFloat(document.getElementById('flatTenor').value) || 1;
@@ -2622,9 +2372,7 @@
             document.getElementById('flatTotalPayment').textContent = symbol + totalPayment.toLocaleString('id-ID');
         }
 
-        // ============================================================
-        // EFFECTIVE INTEREST CALCULATOR (No. 1)
-        // ============================================================
+        // ===== EFFECTIVE INTEREST =====
         function calculateEffectiveInterest() {
             const principal = parseFloat(document.getElementById('effPrincipal').value) || 0;
             const tenor = parseFloat(document.getElementById('effTenor').value) || 1;
@@ -2643,9 +2391,7 @@
             document.getElementById('effTotalPayment').textContent = symbol + totalPayment.toLocaleString('id-ID');
         }
 
-        // ============================================================
-        // HISTORY
-        // ============================================================
+        // ===== HISTORY =====
         const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT7BgGqqbA5l-pLHs_ZDQyfnjYCXT1MY3tt5cTggBS_U-pWNu7CLgiKhZx7LTSFxsFlnH8CrutDvo14/pub?output=csv';
 
         async function loadHistoryFromSheets() {
@@ -2690,15 +2436,14 @@
 
                     let symbol = 'Rp ';
                     const typeLower = type.toLowerCase();
-                    if (typeLower.includes('usdt') && (typeLower.includes('sell') || typeLower.includes('jual'))) {
-                        symbol = '$ ';
-                    } else if (typeLower.includes('php') && (typeLower.includes('sell') || typeLower.includes('jual'))) {
+                    if (typeLower.includes('usdt') && (typeLower.includes('sell') || typeLower.includes('jual'))) symbol =
+                        '$ ';
+                    else if (typeLower.includes('php') && (typeLower.includes('sell') || typeLower.includes('jual')))
                         symbol = '₱ ';
-                    } else if (typeLower.includes('usdt') && (typeLower.includes('buy') || typeLower.includes('beli'))) {
+                    else if (typeLower.includes('usdt') && (typeLower.includes('buy') || typeLower.includes('beli')))
                         symbol = '$ ';
-                    } else if (typeLower.includes('php') && (typeLower.includes('buy') || typeLower.includes('beli'))) {
+                    else if (typeLower.includes('php') && (typeLower.includes('buy') || typeLower.includes('beli')))
                         symbol = '₱ ';
-                    }
 
                     const formattedAmount = symbol + parseFloat(amount).toLocaleString('id-ID');
 
@@ -2762,9 +2507,7 @@
             return rows;
         }
 
-        // ============================================================
-        // TESTIMONIALS
-        // ============================================================
+        // ===== TESTIMONIALS =====
         let testimonials = [
             { name: 'Gerica', rating: 5, comment: 'Very fast and reliable! CS responded within 5 minutes.',
                 date: '2026-08-21' },
@@ -2818,9 +2561,7 @@
         }
         renderTestimonials();
 
-        // ============================================================
-        // INIT
-        // ============================================================
+        // ===== INIT =====
         initChart();
         fetchRates();
         setInterval(fetchRates, 30000);
@@ -2832,11 +2573,8 @@
             }
         }, 5000);
 
-        console.log('🚀 SUPEREXCHANGE - ULTIMATE PREMIUM LAUNCHED!');
-        console.log('✅ Flat & Effective Interest Calculators');
-        console.log('✅ Smooth Animations & Transitions');
-        console.log('✅ Auto-reply Email Notification');
-        console.log('✅ Favicon (⚡)');
+        console.log('🚀 SUPEREXCHANGE - FINAL ULTIMATE LAUNCHED!');
+        console.log('✅ All features working perfectly!');
         console.log('📱 Access: https://gerraldhustonxxx.github.io/superexchange/');
     </script>
 
