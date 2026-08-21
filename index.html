@@ -1257,7 +1257,7 @@
         <div class="last-update" id="lastUpdate">⏳ Last update: Fetching...</div>
 
         <!-- ============================================================
-        TOOLS: KALKULATOR KURS & SIMULASI PINJAMAN
+        TOOLS: KALKULATOR KURS & SIMULASI PINJAMAN (Multi-Currency)
         ============================================================ -->
         <div class="tools-grid">
             <!-- KALKULATOR KURS -->
@@ -1288,13 +1288,18 @@
                 </div>
             </div>
 
-            <!-- SIMULASI PINJAMAN -->
+            <!-- SIMULASI PINJAMAN (Multi-Currency: IDR, USDT, PHP) -->
             <div class="tool-card" id="loanSimulatorTool">
                 <h3>💰 Loan Simulator</h3>
                 <p class="tool-subtitle">Estimate your monthly installment and total interest</p>
                 <div class="input-group">
-                    <label>Amount (IDR)</label>
+                    <label>Amount</label>
                     <input type="number" id="loanSimAmount" value="10000000" oninput="simulateLoan()" />
+                    <select id="loanSimCurrency" onchange="simulateLoan()" style="flex:0.3;min-width:80px;">
+                        <option value="idr">IDR</option>
+                        <option value="usdt">USDT</option>
+                        <option value="php">PHP</option>
+                    </select>
                 </div>
                 <div class="input-group">
                     <label>Tenor</label>
@@ -1305,12 +1310,13 @@
                         <option value="60">60 days</option>
                     </select>
                     <label>Interest (%)</label>
-                    <input type="number" id="loanSimInterest" value="5" oninput="simulateLoan()" style="max-width:80px;" />
+                    <input type="number" id="loanSimInterest" value="5" oninput="simulateLoan()" style="max-width:100px;" />
                 </div>
                 <div class="result-box" id="loanSimResult">
                     <div class="result-row"><span class="label">Total Payment</span><span class="value green" id="loanSimTotal">--</span></div>
-                    <div class="result-row"><span class="label">Monthly Installment</span><span class="value" id="loanSimInstallment">--</span></div>
+                    <div class="result-row"><span class="label">Installment</span><span class="value" id="loanSimInstallment">--</span></div>
                     <div class="result-row"><span class="label">Total Interest</span><span class="value red" id="loanSimInterestTotal">--</span></div>
+                    <div class="result-row"><span class="label">Currency</span><span class="value" id="loanSimCurrencyDisplay">IDR</span></div>
                 </div>
             </div>
         </div>
@@ -1456,7 +1462,7 @@
         </div>
 
         <!-- ============================================================
-        TESTIMONIALS / RATING
+        TESTIMONIALS
         ============================================================ -->
         <div class="testimonial-section" id="formTestimonial">
             <div class="testimonial-header">
@@ -1464,9 +1470,7 @@
                 <h2>User Testimonials</h2>
             </div>
             <p class="subtitle">What our users say about SuperExchange.</p>
-            <div class="testimonial-grid" id="testimonialGrid">
-                <!-- Will be populated by JS -->
-            </div>
+            <div class="testimonial-grid" id="testimonialGrid"></div>
             <div class="testimonial-form-box">
                 <h4>⭐ Leave a Review</h4>
                 <div class="input-group">
@@ -1529,9 +1533,10 @@
         setInterval(updateClock, 1000);
 
         // ============================================================
-        // 2. THEME TOGGLE (Dark / Light)
+        // 2. THEME TOGGLE
         // ============================================================
         let currentTheme = 'dark';
+
         function toggleTheme() {
             const html = document.documentElement;
             const btn = document.getElementById('themeBtn');
@@ -1546,7 +1551,6 @@
             }
             localStorage.setItem('theme', currentTheme);
         }
-        // Load saved theme
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
@@ -1555,7 +1559,7 @@
         }
 
         // ============================================================
-        // 3. LANGUAGE (Multi-language)
+        // 3. LANGUAGE
         // ============================================================
         const translations = {
             en: { exchange: 'Exchange', loan: 'Loan', history: 'History', legal: 'Legal', testimonials: 'Testimonials' },
@@ -1576,7 +1580,6 @@
             });
             localStorage.setItem('lang', lang);
         }
-        // Load saved language
         const savedLang = localStorage.getItem('lang');
         if (savedLang && translations[savedLang]) {
             document.getElementById('langSelect').value = savedLang;
@@ -1587,7 +1590,8 @@
         // 4. SHOW FORM
         // ============================================================
         function showForm(type) {
-            document.querySelectorAll('.form-section, .history-section, .legal-section, .testimonial-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.form-section, .history-section, .legal-section, .testimonial-section').forEach(el =>
+                el.classList.remove('active'));
             document.querySelectorAll('.success-box').forEach(el => el.classList.remove('show'));
 
             const map = {
@@ -1615,7 +1619,8 @@
                 this.classList.add('active');
                 const target = this.dataset.loan;
                 document.querySelectorAll('.loan-form').forEach(el => el.classList.remove('active'));
-                document.getElementById('loan' + target.charAt(0).toUpperCase() + target.slice(1)).classList.add('active');
+                document.getElementById('loan' + target.charAt(0).toUpperCase() + target.slice(1)).classList.add(
+                'active');
             });
         });
 
@@ -1628,7 +1633,8 @@
                 this.classList.add('active');
                 const target = this.dataset.legal;
                 document.querySelectorAll('.legal-content').forEach(el => el.style.display = 'none');
-                document.getElementById('legal' + target.charAt(0).toUpperCase() + target.slice(1)).style.display = 'block';
+                document.getElementById('legal' + target.charAt(0).toUpperCase() + target.slice(1)).style.display =
+                    'block';
             });
         });
 
@@ -1688,10 +1694,11 @@
                     }
                 });
                 previousRates = rates;
-                document.getElementById('lastUpdate').textContent = '⏳ Last update: ' + new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+                document.getElementById('lastUpdate').textContent = '⏳ Last update: ' + new Date().toLocaleString('en-US',
+                    { timeZone: 'Asia/Jakarta' });
                 updateChart(rates.usdtIdr);
-                calculateCurrency(); // update calculator
-                simulateLoan(); // update loan simulator
+                calculateCurrency();
+                simulateLoan();
             } catch (error) {
                 console.error('Error:', error);
                 document.getElementById('lastUpdate').textContent = '⚠️ Failed to fetch rates. Refresh page.';
@@ -1707,7 +1714,8 @@
 
         function updateChart(newPrice) {
             const now = new Date();
-            const timeLabel = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            const timeLabel = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2,
+            '0');
             chartData.push({ x: timeLabel, y: newPrice });
             if (chartData.length > MAX_DATA_POINTS) chartData.shift();
             if (chartInstance) {
@@ -1724,12 +1732,23 @@
             gradient.addColorStop(1, 'rgba(240, 185, 11, 0.00)');
             chartInstance = new Chart(ctx, {
                 type: 'line',
-                data: { labels: [], datasets: [{ label: 'USDT / IDR', data: [], borderColor: '#F0B90B', backgroundColor: gradient, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, pointHoverBackgroundColor: '#F0B90B', tension: 0.3, fill: true }] },
+                data: { labels: [], datasets: [{ label: 'USDT / IDR', data: [], borderColor: '#F0B90B',
+                        backgroundColor: gradient, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4,
+                        pointHoverBackgroundColor: '#F0B90B', tension: 0.3, fill: true }] },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false, backgroundColor: '#1E2329', titleColor: '#EAECEF', bodyColor: '#F0B90B', borderColor: '#2B3139', borderWidth: 1, cornerRadius: 8, padding: 10, callbacks: { label: function(context) { return 'Rp ' + context.parsed.y.toLocaleString('id-ID'); } } } },
-                    scales: { x: { grid: { color: 'rgba(43, 49, 57, 0.3)', drawBorder: false }, ticks: { color: '#5E6673', font: { size: 9, family: 'Inter' }, maxTicksLimit: 12 } }, y: { grid: { color: 'rgba(43, 49, 57, 0.3)', drawBorder: false }, ticks: { color: '#5E6673', font: { size: 9, family: 'Inter' }, callback: function(value) { return 'Rp ' + value.toLocaleString('id-ID'); } } } },
+                    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false,
+                            backgroundColor: '#1E2329', titleColor: '#EAECEF', bodyColor: '#F0B90B',
+                            borderColor: '#2B3139', borderWidth: 1, cornerRadius: 8, padding: 10,
+                            callbacks: { label: function(context) { return 'Rp ' + context.parsed.y
+                                    .toLocaleString('id-ID'); } } } },
+                    scales: { x: { grid: { color: 'rgba(43, 49, 57, 0.3)', drawBorder: false },
+                            ticks: { color: '#5E6673', font: { size: 9, family: 'Inter' },
+                            maxTicksLimit: 12 } }, y: { grid: { color: 'rgba(43, 49, 57, 0.3)',
+                                drawBorder: false }, ticks: { color: '#5E6673', font: { size: 9,
+                                    family: 'Inter' }, callback: function(value) { return 'Rp ' +
+                                    value.toLocaleString('id-ID'); } } } },
                     interaction: { intersect: false, mode: 'index' }
                 }
             });
@@ -1743,7 +1762,7 @@
         });
 
         // ============================================================
-        // 10. KALKULATOR KURS (AUTO)
+        // 10. KALKULATOR KURS
         // ============================================================
         function calculateCurrency() {
             const amount = parseFloat(document.getElementById('calcAmount').value) || 0;
@@ -1769,30 +1788,70 @@
                 (from === 'idr' && to === 'php') ? rates.idrPhp : 0;
 
             const symbols = { usdt: '$', php: '₱', idr: 'Rp' };
-            document.getElementById('calcResultValue').textContent = symbols[to] + ' ' + result.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            document.getElementById('calcRate').textContent = '1 ' + from.toUpperCase() + ' = ' + symbols[to] + ' ' + rate.toFixed(4);
+            document.getElementById('calcResultValue').textContent = symbols[to] + ' ' + result.toLocaleString('id-ID', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.getElementById('calcRate').textContent = '1 ' + from.toUpperCase() + ' = ' + symbols[to] + ' ' + rate
+                .toFixed(4);
         }
 
         // ============================================================
-        // 11. SIMULASI PINJAMAN (AUTO)
+        // 11. SIMULASI PINJAMAN (Multi-Currency)
         // ============================================================
         function simulateLoan() {
             const amount = parseFloat(document.getElementById('loanSimAmount').value) || 0;
             const tenor = parseInt(document.getElementById('loanSimTenor').value) || 30;
             const interestRate = parseFloat(document.getElementById('loanSimInterest').value) || 5;
+            const currency = document.getElementById('loanSimCurrency').value;
+
+            if (!rates.usdtIdr) return;
+
+            // Convert amount to IDR for calculation if needed
+            let amountInIdr = amount;
+            if (currency === 'usdt') amountInIdr = amount * rates.usdtIdr;
+            else if (currency === 'php') amountInIdr = amount * rates.phpIdr;
 
             const monthlyRate = interestRate / 100 / 30;
-            const totalInterest = amount * monthlyRate * tenor;
-            const totalPayment = amount + totalInterest;
+            const totalInterest = amountInIdr * monthlyRate * tenor;
+            const totalPayment = amountInIdr + totalInterest;
             const installment = totalPayment / tenor;
 
-            document.getElementById('loanSimTotal').textContent = 'Rp ' + totalPayment.toLocaleString('id-ID');
-            document.getElementById('loanSimInstallment').textContent = 'Rp ' + installment.toLocaleString('id-ID', { minimumFractionDigits: 0 });
-            document.getElementById('loanSimInterestTotal').textContent = 'Rp ' + totalInterest.toLocaleString('id-ID');
+            // Convert results back to selected currency
+            let resultTotal = totalPayment;
+            let resultInstallment = installment;
+            let resultInterest = totalInterest;
+            let symbol = 'Rp ';
+
+            if (currency === 'usdt') {
+                resultTotal = totalPayment / rates.usdtIdr;
+                resultInstallment = installment / rates.usdtIdr;
+                resultInterest = totalInterest / rates.usdtIdr;
+                symbol = '$ ';
+            } else if (currency === 'php') {
+                resultTotal = totalPayment / rates.phpIdr;
+                resultInstallment = installment / rates.phpIdr;
+                resultInterest = totalInterest / rates.phpIdr;
+                symbol = '₱ ';
+            }
+
+            document.getElementById('loanSimTotal').textContent = symbol + resultTotal.toLocaleString('id-ID', {
+                minimumFractionDigits: currency === 'idr' ? 0 : 2,
+                maximumFractionDigits: currency === 'idr' ? 0 : 2
+            });
+            document.getElementById('loanSimInstallment').textContent = symbol + resultInstallment.toLocaleString('id-ID', {
+                minimumFractionDigits: currency === 'idr' ? 0 : 2,
+                maximumFractionDigits: currency === 'idr' ? 0 : 2
+            });
+            document.getElementById('loanSimInterestTotal').textContent = symbol + resultInterest.toLocaleString('id-ID', {
+                minimumFractionDigits: currency === 'idr' ? 0 : 2,
+                maximumFractionDigits: currency === 'idr' ? 0 : 2
+            });
+            document.getElementById('loanSimCurrencyDisplay').textContent = currency.toUpperCase();
         }
 
         // ============================================================
-        // 12. HISTORY (Google Sheets CSV)
+        // 12. HISTORY
         // ============================================================
         const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT7BgGqqbA5l-pLHs_ZDQyfnjYCXT1MY3tt5cTggBS_U-pWNu7CLgiKhZx7LTSFxsFlnH8CrutDvo14/pub?output=csv';
 
@@ -1821,7 +1880,8 @@
                 const dateIdx = headers.findIndex(h => h.toLowerCase().includes('timestamp'));
                 const nameIdx = headers.findIndex(h => h.toLowerCase().includes('full name'));
                 const emailIdx = headers.findIndex(h => h.toLowerCase().includes('email'));
-                const typeIdx = headers.findIndex(h => h.toLowerCase().includes('transaction type') || h.toLowerCase().includes('type'));
+                const typeIdx = headers.findIndex(h => h.toLowerCase().includes('transaction type') || h.toLowerCase()
+                    .includes('type'));
                 const amountIdx = headers.findIndex(h => h.toLowerCase().includes('amount'));
                 const statusIdx = headers.findIndex(h => h.toLowerCase().includes('status'));
 
@@ -1840,7 +1900,8 @@
                     if (!['Pending', 'Processed', 'Done'].includes(status)) status = 'Pending';
                     const statusClass = status.toLowerCase();
 
-                    html += `<tr><td>${date}</td><td>${name}</td><td>${email}</td><td>${type}</td><td>${amount}</td><td><span class="status-badge ${statusClass}">${status}</span></td></tr>`;
+                    html +=
+                        `<tr><td>${date}</td><td>${name}</td><td>${email}</td><td>${type}</td><td>${amount}</td><td><span class="status-badge ${statusClass}">${status}</span></td></tr>`;
                 }
 
                 if (html === '') {
@@ -1872,7 +1933,8 @@
                     if (char === '"' && text[i + 1] === '"') { currentField += '"';
                         i++; } else if (char === '"') { insideQuotes = false; } else { currentField += char; }
                 } else {
-                    if (char === '"') { insideQuotes = true; } else if (char === ',') { currentRow.push(currentField.trim());
+                    if (char === '"') { insideQuotes = true; } else if (char === ',') { currentRow.push(currentField
+                            .trim());
                         currentField = ''; } else if (char === '\n' || char === '\r') {
                         if (char === '\r' && text[i + 1] === '\n') i++;
                         currentRow.push(currentField.trim());
@@ -1882,16 +1944,19 @@
                     } else { currentField += char; }
                 }
             }
-            if (currentField !== '' || currentRow.length > 0) { currentRow.push(currentField.trim()); if (currentRow.some(f => f !== '')) rows.push(currentRow); }
+            if (currentField !== '' || currentRow.length > 0) { currentRow.push(currentField.trim()); if (currentRow.some(
+                    f => f !== '')) rows.push(currentRow); }
             return rows;
         }
 
         // ============================================================
-        // 13. TESTIMONIALS (RATING)
+        // 13. TESTIMONIALS
         // ============================================================
         let testimonials = [
-            { name: 'Gerica', rating: 5, comment: 'Very fast and reliable! CS responded within 5 minutes.', date: '2026-08-21' },
-            { name: 'gerica2', rating: 4, comment: 'Good service, will use again for my next exchange.', date: '2026-08-20' },
+            { name: 'Gerica', rating: 5, comment: 'Very fast and reliable! CS responded within 5 minutes.',
+            date: '2026-08-21' },
+            { name: 'gerica2', rating: 4, comment: 'Good service, will use again for my next exchange.',
+            date: '2026-08-20' },
         ];
 
         function renderTestimonials() {
@@ -1930,12 +1995,9 @@
             status.style.color = 'var(--green)';
             status.textContent = '✅ Thank you for your review!';
             setTimeout(() => status.textContent = '', 5000);
-
-            // Save to localStorage
             localStorage.setItem('testimonials', JSON.stringify(testimonials));
         }
 
-        // Load saved testimonials
         const savedTestimonials = localStorage.getItem('testimonials');
         if (savedTestimonials) {
             try { testimonials = JSON.parse(savedTestimonials); } catch (e) {}
@@ -1956,8 +2018,8 @@
             }
         }, 5000);
 
-        console.log('🚀 SUPEREXCHANGE - PREMIUM ULTIMATE LAUNCHED!');
-        console.log('✅ Features: Rates, Chart, Calculator, Loan Simulator, Exchange, Loan, History, Legal, Testimonials, Dark/Light, 6 Languages, Floating Contact');
+        console.log('🚀 SUPEREXCHANGE - FINAL ULTIMATE LAUNCHED!');
+        console.log('✅ Features: Rates, Chart, Calculator, Multi-Currency Loan Simulator (IDR/USDT/PHP), Exchange, Loan, History, Legal, Testimonials, Dark/Light, 6 Languages, Floating Contact');
         console.log('📱 Access: https://gerraldhustonxxx.github.io/superexchange/');
     </script>
 
