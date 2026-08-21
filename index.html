@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SuperExchange - Rates & Loans</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <style>
+        /* ===== ROOT VARIABLES (BINANCE THEME) ===== */
+        :root {
+            --bg-primary: #0B0E11;
+            --bg-secondary: #1E2329;
+            --bg-card: #1E2329;
+            --bg-hover: #2B3139;
+            --border-color: #2B3139;
+            --text-primary: #EAECEF;
+            --text-secondary: #848E9C;
+            --text-muted: #5E6673;
+            --binance-yellow: #F0B90B;
+            --binance-yellow-dark: #C9940A;
+            --green: #0ECB81;
+            --red: #F6465D;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--binance-yellow);
+            text-decoration: none;
+        }
+        .logo i {
+            font-size: 1.8rem;
+        }
+        .logo span {
+            color: var(--text-primary);
+            font-weight: 300;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-actions .badge {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+        }
+
+        .header-actions .badge i {
+            color: var(--green);
+            margin-right: 4px;
+        }
+
+        /* ===== RATES GRID ===== */
+        .rates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .rate-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 16px 18px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+        .rate-card:hover {
+            border-color: var(--binance-yellow);
+            background: var(--bg-hover);
+        }
+
+        .rate-card .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rate-card .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+        .rate-card .value.usdt {
+            color: var(--binance-yellow);
+        }
+        .rate-card .value.peso {
+            color: var(--green);
+        }
+        .rate-card .value.idr {
+            color: #FF6B6B;
+        }
+
+        .rate-card .change {
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        .rate-card .change.positive {
+            color: var(--green);
+        }
+        .rate-card .change.negative {
+            color: var(--red);
+        }
+
+        .last-update {
+            text-align: right;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
+
+        /* ===== CHART ===== */
+        .chart-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .chart-section .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .chart-section .chart-header h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+        }
+
+        .chart-section .chart-header h3 i {
+            color: var(--binance-yellow);
+            margin-right: 6px;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 3px;
+        }
+        .chart-tabs button {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 4px 14px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: var(--font);
+        }
+        .chart-tabs button:hover {
+            color: var(--text-primary);
+        }
+        .chart-tabs button.active {
+            background: var(--binance-yellow);
+            color: var(--bg-primary);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+        }
+        .chart-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* ===== ACTION BUTTONS ===== */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font);
+            flex: 1;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--binance-yellow);
+            color: var(--bg-primary);
+        }
+        .btn-primary:hover {
+            background: var(--binance-yellow-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(240, 185, 11, 0.25);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            border-color: var(--text-muted);
+        }
+
+        /* ===== PROFESSIONAL FORM CARD ===== */
+        .form-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+
+        .form-section .form-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .form-section .form-header .icon-circle {
+            width: 44px;
+            height: 44px;
+            background: rgba(240, 185, 11, 0.12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--binance-yellow);
+        }
+        .form-section h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .form-section .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            margin-left: 56px;
+        }
+
+        .form-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .form-card:hover {
+            border-color: var(--binance-yellow);
+        }
+
+        .form-card .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .form-card .row:last-child {
+            border-bottom: none;
+        }
+        .form-card .row .label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .form-card .row .value {
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+        .form-card .row .value i {
+            color: var(--green);
+            margin-right: 6px;
+        }
+
+        .form-card .btn-submit-form {
+            width: 100%;
+            margin-top: 16px;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--binance-yellow), var(--binance-yellow-dark));
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .form-card .btn-submit-form:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(240, 185, 11, 0.25);
+        }
+        .form-card .btn-submit-form i {
+            font-size: 1.1rem;
+        }
+
+        .form-card .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 12px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+        }
+        .form-card .secure-badge i {
+            color: var(--green);
+        }
+
+        /* ===== SUCCESS MESSAGE ===== */
+        .success-box {
+            background: rgba(14, 203, 129, 0.08);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid rgba(14, 203, 129, 0.2);
+            margin-top: 16px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        .success-box.show {
+            display: flex;
+        }
+        .success-box i {
+            color: var(--green);
+            font-size: 1.2rem;
+        }
+        .success-box p {
+            color: var(--green);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* ===== LOAN TABS ===== */
+        .loan-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 18px;
+            background: var(--bg-primary);
+            padding: 4px;
+            border-radius: 10px;
+        }
+        .loan-tabs button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: var(--font);
+            flex: 1;
+            min-width: 100px;
+        }
+        .loan-tabs button:hover {
+            color: var(--text-primary);
+        }
+        .loan-tabs button.active {
+            background: var(--binance-yellow);
+            color: var(--bg-primary);
+        }
+
+        .loan-form {
+            display: none;
+        }
+        .loan-form.active {
+            display: block;
+        }
+
+        /* ===== CONTACT ===== */
+        .contact-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            margin-top: 8px;
+        }
+        .contact-section h3 {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .contact-section .telegram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--binance-yellow);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: 0.2s;
+        }
+        .contact-section .telegram-link:hover {
+            border-color: var(--binance-yellow);
+            background: rgba(240, 185, 11, 0.06);
+        }
+        .contact-section .telegram-link i {
+            font-size: 1.4rem;
+            color: #26A5E4;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 24px 0 8px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 16px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .header-actions {
+                justify-content: space-between;
+            }
+            .rates-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-wrapper {
+                height: 200px;
+            }
+            .btn {
+                min-width: 100%;
+            }
+            .loan-tabs button {
+                min-width: 60px;
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
+            .form-section {
+                padding: 20px;
+            }
+            .form-section .subtitle {
+                margin-left: 0;
+            }
+            .form-card .row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .rates-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+            .rate-card {
+                padding: 12px;
+            }
+            .rate-card .value {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <a href="#" class="logo">
+                <i class="fas fa-bolt"></i> Super<span>Exchange</span>
+            </a>
+            <div class="header-actions">
+                <span class="badge"><i class="fas fa-circle"></i> Live</span>
+                <span class="badge" id="clockDisplay">Loading...</span>
+            </div>
+        </header>
+
+        <!-- ===== RATES GRID ===== -->
+        <div class="rates-grid" id="ratesContainer">
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-coins" style="color:#F0B90B;"></i> USDT / IDR</div>
+                <div class="value usdt" id="usdtIdr">---</div>
+                <div class="change positive" id="usdtIdrChange">+0.00%</div>
+            </div>
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-coins" style="color:#F0B90B;"></i> USDT / PHP</div>
+                <div class="value usdt" id="usdtPhp">---</div>
+                <div class="change positive" id="usdtPhpChange">+0.00%</div>
+            </div>
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-peso-sign" style="color:#0ECB81;"></i> PHP / IDR</div>
+                <div class="value peso" id="phpIdr">---</div>
+                <div class="change positive" id="phpIdrChange">+0.00%</div>
+            </div>
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-peso-sign" style="color:#0ECB81;"></i> PHP / USDT</div>
+                <div class="value peso" id="phpUsdt">---</div>
+                <div class="change positive" id="phpUsdtChange">+0.00%</div>
+            </div>
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-rupiah-sign" style="color:#FF6B6B;"></i> IDR / USDT</div>
+                <div class="value idr" id="idrUsdt">---</div>
+                <div class="change positive" id="idrUsdtChange">+0.00%</div>
+            </div>
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-rupiah-sign" style="color:#FF6B6B;"></i> IDR / PHP</div>
+                <div class="value idr" id="idrPhp">---</div>
+                <div class="change positive" id="idrPhpChange">+0.00%</div>
+            </div>
+        </div>
+
+        <div class="last-update" id="lastUpdate">⏳ Last update: Fetching...</div>
+
+        <!-- ===== CHART SECTION ===== -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-line"></i> USDT / IDR Price Chart</h3>
+                <div class="chart-tabs">
+                    <button class="active" data-interval="1m">1M</button>
+                    <button data-interval="5m">5M</button>
+                    <button data-interval="15m">15M</button>
+                    <button data-interval="1h">1H</button>
+                    <button data-interval="4h">4H</button>
+                    <button data-interval="1d">1D</button>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="priceChart"></canvas>
+            </div>
+        </div>
+
+        <!-- ===== ACTION BUTTONS ===== -->
+        <div class="action-buttons">
+            <a href="#" class="btn btn-primary" onclick="showForm('exchange')">
+                <i class="fas fa-arrows-left-right"></i> Exchange
+            </a>
+            <a href="#" class="btn btn-secondary" onclick="showForm('loan')">
+                <i class="fas fa-hand-holding-dollar"></i> Loan
+            </a>
+        </div>
+
+        <!-- ===== EXCHANGE FORM (PROFESSIONAL) ===== -->
+        <div class="form-section" id="formExchange">
+            <div class="form-header">
+                <div class="icon-circle"><i class="fas fa-arrows-left-right"></i></div>
+                <h2>Exchange Money</h2>
+            </div>
+            <p class="subtitle">Complete your exchange request in just a few clicks.</p>
+
+            <div class="form-card">
+                <div class="row">
+                    <span class="label"><i class="fas fa-clock" style="color:var(--text-muted);margin-right:8px;"></i>Estimated Response</span>
+                    <span class="value"><i class="fas fa-check-circle"></i> Within 5 minutes via Telegram</span>
+                </div>
+                <div class="row">
+                    <span class="label"><i class="fas fa-shield-alt" style="color:var(--text-muted);margin-right:8px;"></i>Data Security</span>
+                    <span class="value"><i class="fas fa-check-circle"></i> Encrypted &amp; Private</span>
+                </div>
+                <div class="row">
+                    <span class="label"><i class="fas fa-database" style="color:var(--text-muted);margin-right:8px;"></i>Storage</span>
+                    <span class="value"><i class="fas fa-check-circle"></i> Saved to Secure Database</span>
+                </div>
+
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form">
+                    <i class="fas fa-paper-plane"></i> Start Exchange Request
+                </a>
+
+                <div class="secure-badge">
+                    <i class="fas fa-lock"></i> Your data is secure with Google Forms
+                </div>
+            </div>
+
+            <div class="success-box" id="exchangeSuccess">
+                <i class="fas fa-check-circle"></i>
+                <p>✅ Request received! CS will contact you via Telegram within 5 minutes.</p>
+            </div>
+        </div>
+
+        <!-- ===== LOAN SECTION (PROFESSIONAL) ===== -->
+        <div class="form-section" id="formLoan">
+            <div class="form-header">
+                <div class="icon-circle"><i class="fas fa-hand-holding-dollar"></i></div>
+                <h2>Loan Application</h2>
+            </div>
+            <p class="subtitle">Choose your collateral type and apply instantly.</p>
+
+            <div class="loan-tabs">
+                <button class="active" data-loan="ktp"><i class="fas fa-id-card"></i> KTP</button>
+                <button data-loan="passport"><i class="fas fa-passport"></i> Passport</button>
+                <button data-loan="crypto"><i class="fas fa-bitcoin"></i> Crypto</button>
+            </div>
+
+            <!-- KTP -->
+            <div class="loan-form active" id="loanKtp">
+                <div class="form-card">
+                    <div class="row">
+                        <span class="label"><i class="fas fa-id-card" style="color:var(--text-muted);margin-right:8px;"></i>Collateral</span>
+                        <span class="value">KTP (ID Card)</span>
+                    </div>
+                    <div class="row">
+                        <span class="label"><i class="fas fa-clock" style="color:var(--text-muted);margin-right:8px;"></i>Response Time</span>
+                        <span class="value"><i class="fas fa-check-circle"></i> Within 5 minutes</span>
+                    </div>
+                    <div class="row">
+                        <span class="label"><i class="fas fa-flag" style="color:var(--text-muted);margin-right:8px;"></i>Requirements</span>
+                        <span class="value">Valid KTP + Selfie</span>
+                    </div>
+
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form">
+                        <i class="fas fa-paper-plane"></i> Apply KTP Loan
+                    </a>
+                </div>
+                <div class="success-box" id="ktpSuccess">
+                    <i class="fas fa-check-circle"></i>
+                    <p>✅ Request received! CS will contact you via Telegram within 5 minutes.</p>
+                </div>
+            </div>
+
+            <!-- PASSPORT -->
+            <div class="loan-form" id="loanPassport">
+                <div class="form-card">
+                    <div class="row">
+                        <span class="label"><i class="fas fa-passport" style="color:var(--text-muted);margin-right:8px;"></i>Collateral</span>
+                        <span class="value">Passport</span>
+                    </div>
+                    <div class="row">
+                        <span class="label"><i class="fas fa-clock" style="color:var(--text-muted);margin-right:8px;"></i>Response Time</span>
+                        <span class="value"><i class="fas fa-check-circle"></i> Within 5 minutes</span>
+                    </div>
+                    <div class="row">
+                        <span class="label"><i class="fas fa-flag" style="color:var(--text-muted);margin-right:8px;"></i>Requirements</span>
+                        <span class="value">Valid Passport + Photo</span>
+                    </div>
+
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form">
+                        <i class="fas fa-paper-plane"></i> Apply Passport Loan
+                    </a>
+                </div>
+                <div class="success-box" id="passportSuccess">
+                    <i class="fas fa-check-circle"></i>
+                    <p>✅ Request received! CS will contact you via Telegram within 5 minutes.</p>
+                </div>
+            </div>
+
+            <!-- CRYPTO -->
+            <div class="loan-form" id="loanCrypto">
+                <div class="form-card">
+                    <div class="row">
+                        <span class="label"><i class="fas fa-bitcoin" style="color:var(--text-muted);margin-right:8px;"></i>Collateral</span>
+                        <span class="value">Crypto (USDT, BTC, ETH)</span>
+                    </div>
+                    <div class="row">
+                        <span class="label"><i class="fas fa-clock" style="color:var(--text-muted);margin-right:8px;"></i>Response Time</span>
+                        <span class="value"><i class="fas fa-check-circle"></i> Within 5 minutes</span>
+                    </div>
+                    <div class="row">
+                        <span class="label"><i class="fas fa-flag" style="color:var(--text-muted);margin-right:8px;"></i>Requirements</span>
+                        <span class="value">Wallet Address + Balance Proof</span>
+                    </div>
+
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSefYL-T3en4sgaIvKgUzuyPSfPX9P9jRhTqKyIIjYduMxujhA/viewform?usp=publish-editor" target="_blank" class="btn-submit-form">
+                        <i class="fas fa-paper-plane"></i> Apply Crypto Loan
+                    </a>
+                </div>
+                <div class="success-box" id="cryptoSuccess">
+                    <i class="fas fa-check-circle"></i>
+                    <p>✅ Request received! CS will contact you via Telegram within 5 minutes.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CONTACT ===== -->
+        <div class="contact-section">
+            <h3><i class="fas fa-headset"></i> 24/7 Support</h3>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:12px;">Our team is ready to assist you.</p>
+            <a href="https://t.me/Huann99" target="_blank" class="telegram-link">
+                <i class="fab fa-telegram-plane"></i> @Huann99
+            </a>
+            <p style="color:var(--text-muted);font-size:0.7rem;margin-top:10px;">Response within 5 minutes</p>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer">
+            &copy; 2026 SuperExchange. All rights reserved.
+        </div>
+
+    </div>
+
+    <!-- ===== SCRIPT ===== -->
+    <script>
+        // =============================================
+        // 1. CLOCK
+        // =============================================
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clockDisplay').textContent = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // =============================================
+        // 2. SHOW FORM
+        // =============================================
+        function showForm(type) {
+            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.success-box').forEach(el => el.classList.remove('show'));
+
+            if (type === 'exchange') {
+                document.getElementById('formExchange').classList.add('active');
+                document.getElementById('formExchange').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else if (type === 'loan') {
+                document.getElementById('formLoan').classList.add('active');
+                document.getElementById('formLoan').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // =============================================
+        // 3. LOAN TABS
+        // =============================================
+        document.querySelectorAll('.loan-tabs button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.loan-tabs button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const target = this.dataset.loan;
+                document.querySelectorAll('.loan-form').forEach(el => el.classList.remove('active'));
+                document.getElementById('loan' + target.charAt(0).toUpperCase() + target.slice(1)).classList.add('active');
+            });
+        });
+
+        // =============================================
+        // 4. SHOW SUCCESS MESSAGE
+        // =============================================
+        document.querySelectorAll('.btn-submit-form').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const parentSection = this.closest('.form-section') || this.closest('.loan-form');
+                if (parentSection) {
+                    const successBox = parentSection.querySelector('.success-box');
+                    if (successBox) {
+                        document.querySelectorAll('.success-box').forEach(el => el.classList.remove('show'));
+                        successBox.classList.add('show');
+                        setTimeout(() => {
+                            successBox.classList.remove('show');
+                        }, 10000);
+                    }
+                }
+            });
+        });
+
+        // =============================================
+        // 5. FETCH RATES
+        // =============================================
+        let previousRates = {};
+
+        async function fetchRates() {
+            try {
+                const resUsdt = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=idr,php');
+                const dataUsdt = await resUsdt.json();
+
+                const resPhp = await fetch('https://api.exchangerate-api.com/v4/latest/PHP');
+                const dataPhp = await resPhp.json();
+
+                const usdtIdr = dataUsdt.tether.idr;
+                const usdtPhp = dataUsdt.tether.php;
+                const phpIdr = dataPhp.rates.IDR;
+
+                const phpUsdt = 1 / usdtPhp;
+                const idrUsdt = 1 / usdtIdr;
+                const idrPhp = 1 / phpIdr;
+
+                const rates = { usdtIdr, usdtPhp, phpIdr, phpUsdt, idrUsdt, idrPhp };
+                const ids = ['usdtIdr', 'usdtPhp', 'phpIdr', 'phpUsdt', 'idrUsdt', 'idrPhp'];
+                const symbols = ['Rp ', '₱ ', 'Rp ', '$ ', '$ ', '₱ '];
+
+                ids.forEach((id, i) => {
+                    const val = Object.values(rates)[i];
+                    const formatted = typeof val === 'number' && val < 1 ? val.toFixed(6) : val.toLocaleString('id-ID');
+                    document.getElementById(id).textContent = symbols[i] + formatted;
+
+                    const changeEl = document.getElementById(id + 'Change');
+                    if (previousRates[id]) {
+                        const change = ((val - previousRates[id]) / previousRates[id]) * 100;
+                        changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+                        changeEl.className = 'change ' + (change >= 0 ? 'positive' : 'negative');
+                    } else {
+                        changeEl.textContent = '+0.00%';
+                        changeEl.className = 'change positive';
+                    }
+                });
+
+                previousRates = rates;
+                document.getElementById('lastUpdate').textContent =
+                    '⏳ Last update: ' + new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+
+                updateChart(usdtIdr);
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('lastUpdate').textContent = '⚠️ Failed to fetch rates. Refresh page.';
+            }
+        }
+
+        // =============================================
