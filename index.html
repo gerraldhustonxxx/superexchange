@@ -1069,39 +1069,31 @@
         }
 
         /* ============================================================
-           FLOATING CONTACT
+           FLOATING CONTACT - TELEGRAM ONLY
            ============================================================ */
         .floating-contact {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
             z-index: 999;
         }
         .floating-contact a {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 56px;
-            height: 56px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             text-decoration: none;
             transition: all var(--transition);
             box-shadow: var(--shadow);
-        }
-        .floating-contact a:hover {
-            transform: scale(1.1);
-        }
-        .floating-contact .telegram-float {
             background: #26A5E4;
             color: #fff;
         }
-        .floating-contact .whatsapp-float {
-            background: #25D366;
-            color: #fff;
+        .floating-contact a:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(38, 165, 228, 0.4);
         }
 
         /* ============================================================
@@ -1187,9 +1179,9 @@
                 right: 16px;
             }
             .floating-contact a {
-                width: 48px;
-                height: 48px;
-                font-size: 1.3rem;
+                width: 52px;
+                height: 52px;
+                font-size: 1.5rem;
             }
             .tools-grid {
                 grid-template-columns: 1fr;
@@ -1257,10 +1249,9 @@
         <div class="last-update" id="lastUpdate">⏳ Last update: Fetching...</div>
 
         <!-- ============================================================
-        TOOLS: KALKULATOR KURS & SIMULASI PINJAMAN (Multi-Currency)
+        TOOLS: KALKULATOR KURS & SIMULASI PINJAMAN
         ============================================================ -->
         <div class="tools-grid">
-            <!-- KALKULATOR KURS -->
             <div class="tool-card" id="calculatorTool">
                 <h3>🔄 Currency Calculator</h3>
                 <p class="tool-subtitle">Convert between USDT, PHP, IDR in real-time</p>
@@ -1288,7 +1279,6 @@
                 </div>
             </div>
 
-            <!-- SIMULASI PINJAMAN (Multi-Currency: IDR, USDT, PHP) -->
             <div class="tool-card" id="loanSimulatorTool">
                 <h3>💰 Loan Simulator</h3>
                 <p class="tool-subtitle">Estimate your monthly installment and total interest</p>
@@ -1511,11 +1501,12 @@
     </div>
 
     <!-- ============================================================
-    FLOATING CONTACT
+    FLOATING CONTACT - TELEGRAM ONLY
     ============================================================ -->
     <div class="floating-contact">
-        <a href="https://t.me/Huann99" target="_blank" class="telegram-float" title="Chat on Telegram"><i class="fab fa-telegram-plane"></i></a>
-        <a href="https://wa.me/6281234567890" target="_blank" class="whatsapp-float" title="Chat on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://t.me/Huann99" target="_blank" class="telegram-float" title="Chat on Telegram">
+            <i class="fab fa-telegram-plane"></i>
+        </a>
     </div>
 
     <!-- ============================================================
@@ -1620,7 +1611,7 @@
                 const target = this.dataset.loan;
                 document.querySelectorAll('.loan-form').forEach(el => el.classList.remove('active'));
                 document.getElementById('loan' + target.charAt(0).toUpperCase() + target.slice(1)).classList.add(
-                'active');
+                    'active');
             });
         });
 
@@ -1715,7 +1706,7 @@
         function updateChart(newPrice) {
             const now = new Date();
             const timeLabel = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2,
-            '0');
+                '0');
             chartData.push({ x: timeLabel, y: newPrice });
             if (chartData.length > MAX_DATA_POINTS) chartData.shift();
             if (chartInstance) {
@@ -1797,7 +1788,7 @@
         }
 
         // ============================================================
-        // 11. SIMULASI PINJAMAN (Multi-Currency)
+        // 11. SIMULASI PINJAMAN
         // ============================================================
         function simulateLoan() {
             const amount = parseFloat(document.getElementById('loanSimAmount').value) || 0;
@@ -1807,7 +1798,6 @@
 
             if (!rates.usdtIdr) return;
 
-            // Convert amount to IDR for calculation if needed
             let amountInIdr = amount;
             if (currency === 'usdt') amountInIdr = amount * rates.usdtIdr;
             else if (currency === 'php') amountInIdr = amount * rates.phpIdr;
@@ -1817,7 +1807,6 @@
             const totalPayment = amountInIdr + totalInterest;
             const installment = totalPayment / tenor;
 
-            // Convert results back to selected currency
             let resultTotal = totalPayment;
             let resultInstallment = installment;
             let resultInterest = totalInterest;
@@ -1954,9 +1943,9 @@
         // ============================================================
         let testimonials = [
             { name: 'Gerica', rating: 5, comment: 'Very fast and reliable! CS responded within 5 minutes.',
-            date: '2026-08-21' },
+                date: '2026-08-21' },
             { name: 'gerica2', rating: 4, comment: 'Good service, will use again for my next exchange.',
-            date: '2026-08-20' },
+                date: '2026-08-20' },
         ];
 
         function renderTestimonials() {
@@ -2018,8 +2007,8 @@
             }
         }, 5000);
 
-        console.log('🚀 SUPEREXCHANGE - FINAL ULTIMATE LAUNCHED!');
-        console.log('✅ Features: Rates, Chart, Calculator, Multi-Currency Loan Simulator (IDR/USDT/PHP), Exchange, Loan, History, Legal, Testimonials, Dark/Light, 6 Languages, Floating Contact');
+        console.log('🚀 SUPEREXCHANGE - TELEGRAM ONLY VERSION LAUNCHED!');
+        console.log('✅ WhatsApp removed, Telegram only.');
         console.log('📱 Access: https://gerraldhustonxxx.github.io/superexchange/');
     </script>
 
