@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SuperExchange - Rates & Loans</title>
+
+    <!-- Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Chart.js untuk chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+
+    <style>
+        /* ===== ROOT VARIABLES (BINANCE THEME) ===== */
+        :root {
+            --bg-primary: #0B0E11;
+            --bg-secondary: #1E2329;
+            --bg-card: #1E2329;
+            --bg-hover: #2B3139;
+            --border-color: #2B3139;
+            --text-primary: #EAECEF;
+            --text-secondary: #848E9C;
+            --text-muted: #5E6673;
+            --binance-yellow: #F0B90B;
+            --binance-yellow-dark: #C9940A;
+            --green: #0ECB81;
+            --red: #F6465D;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--binance-yellow);
+            text-decoration: none;
+        }
+        .logo i {
+            font-size: 1.8rem;
+        }
+        .logo span {
+            color: var(--text-primary);
+            font-weight: 300;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-actions .badge {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+        }
+
+        .header-actions .badge i {
+            color: var(--green);
+            margin-right: 4px;
+        }
+
+        /* ===== RATES GRID (BINANCE STYLE) ===== */
+        .rates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .rate-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 16px 18px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+        .rate-card:hover {
+            border-color: var(--binance-yellow);
+            background: var(--bg-hover);
+        }
+
+        .rate-card .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rate-card .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+        .rate-card .value.usdt {
+            color: var(--binance-yellow);
+        }
+        .rate-card .value.peso {
+            color: var(--green);
+        }
+        .rate-card .value.idr {
+            color: #FF6B6B;
+        }
+
+        .rate-card .change {
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        .rate-card .change.positive {
+            color: var(--green);
+        }
+        .rate-card .change.negative {
+            color: var(--red);
+        }
+
+        .last-update {
+            text-align: right;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
+
+        /* ===== CHART SECTION ===== */
+        .chart-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .chart-section .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .chart-section .chart-header h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+        }
+
+        .chart-section .chart-header h3 i {
+            color: var(--binance-yellow);
+            margin-right: 6px;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 3px;
+        }
+        .chart-tabs button {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 4px 14px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: var(--font);
+        }
+        .chart-tabs button:hover {
+            color: var(--text-primary);
+        }
+        .chart-tabs button.active {
+            background: var(--binance-yellow);
+            color: var(--bg-primary);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+        }
+        .chart-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* ===== ACTION BUTTONS ===== */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font);
+            flex: 1;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--binance-yellow);
+            color: var(--bg-primary);
+        }
+        .btn-primary:hover {
+            background: var(--binance-yellow-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(240, 185, 11, 0.25);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            border-color: var(--text-muted);
+        }
+
+        .btn-crypto {
+            background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+            color: #fff;
+        }
+        .btn-crypto:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        /* ===== FORM SECTIONS ===== */
+        .form-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+
+        .form-section h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+        .form-section .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .form-group label .required {
+            color: var(--red);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: var(--font);
+            transition: 0.2s;
+            outline: none;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--binance-yellow);
+            box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.1);
+        }
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--binance-yellow);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: var(--font);
+            margin-top: 4px;
+        }
+        .btn-submit:hover {
+            background: var(--binance-yellow-dark);
+            box-shadow: 0 4px 20px rgba(240, 185, 11, 0.2);
+        }
+
+        .btn-submit-crypto {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: var(--font);
+            margin-top: 4px;
+        }
+        .btn-submit-crypto:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .status-msg {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .status-msg.success {
+            display: block;
+            background: rgba(14, 203, 129, 0.12);
+            color: var(--green);
+            border: 1px solid rgba(14, 203, 129, 0.2);
+        }
+        .status-msg.error {
+            display: block;
+            background: rgba(246, 70, 93, 0.12);
+            color: var(--red);
+            border: 1px solid rgba(246, 70, 93, 0.2);
+        }
+
+        /* ===== LOAN OPTION TABS ===== */
+        .loan-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 18px;
+            background: var(--bg-primary);
+            padding: 4px;
+            border-radius: 10px;
+        }
+        .loan-tabs button {
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: var(--font);
+            flex: 1;
+            min-width: 100px;
+        }
+        .loan-tabs button:hover {
+            color: var(--text-primary);
+        }
+        .loan-tabs button.active {
+            background: var(--binance-yellow);
+            color: var(--bg-primary);
+        }
+
+        .loan-form {
+            display: none;
+        }
+        .loan-form.active {
+            display: block;
+        }
+
+        .loan-form .form-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        /* ===== CONTACT ===== */
+        .contact-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            margin-top: 8px;
+        }
+        .contact-section h3 {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .contact-section .telegram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--binance-yellow);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: 0.2s;
+        }
+        .contact-section .telegram-link:hover {
+            border-color: var(--binance-yellow);
+            background: rgba(240, 185, 11, 0.06);
+        }
+        .contact-section .telegram-link i {
+            font-size: 1.4rem;
+            color: #26A5E4;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 24px 0 8px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 16px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .header-actions {
+                justify-content: space-between;
+            }
+            .rates-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .chart-wrapper {
+                height: 200px;
+            }
+            .btn {
+                min-width: 100%;
+            }
+            .loan-tabs button {
+                min-width: 60px;
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .rates-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+            .rate-card {
+                padding: 12px;
+            }
+            .rate-card .value {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <a href="#" class="logo">
+                <i class="fas fa-bolt"></i> Super<span>Exchange</span>
+            </a>
+            <div class="header-actions">
+                <span class="badge"><i class="fas fa-circle"></i> Live</span>
+                <span class="badge" id="clockDisplay">Loading...</span>
+            </div>
+        </header>
+
+        <!-- ===== RATES GRID ===== -->
+        <div class="rates-grid" id="ratesContainer">
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-coins" style="color:#F0B90B;"></i> USDT / IDR</div>
+                <div class="value usdt" id="usdtIdr">---</div>
+                <div class="change positive" id="usdtIdrChange">+0.00%</div>
+            </div>
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-coins" style="color:#F0B90B;"></i> USDT / PHP</div>
+                <div class="value usdt" id="usdtPhp">---</div>
+                <div class="change positive" id="usdtPhpChange">+0.00%</div>
+            </div>
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-peso-sign" style="color:#0ECB81;"></i> PHP / IDR</div>
+                <div class="value peso" id="phpIdr">---</div>
+                <div class="change positive" id="phpIdrChange">+0.00%</div>
+            </div>
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-peso-sign" style="color:#0ECB81;"></i> PHP / USDT</div>
+                <div class="value peso" id="phpUsdt">---</div>
+                <div class="change positive" id="phpUsdtChange">+0.00%</div>
+            </div>
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-rupiah-sign" style="color:#FF6B6B;"></i> IDR / USDT</div>
+                <div class="value idr" id="idrUsdt">---</div>
+                <div class="change positive" id="idrUsdtChange">+0.00%</div>
+            </div>
+            <div class="rate-card">
+                <div class="label"><i class="fas fa-rupiah-sign" style="color:#FF6B6B;"></i> IDR / PHP</div>
+                <div class="value idr" id="idrPhp">---</div>
+                <div class="change positive" id="idrPhpChange">+0.00%</div>
+            </div>
+        </div>
+
+        <div class="last-update" id="lastUpdate">⏳ Last update: Fetching...</div>
+
+        <!-- ===== CHART SECTION ===== -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-line"></i> USDT / IDR Price Chart</h3>
+                <div class="chart-tabs">
+                    <button class="active" data-interval="1m">1M</button>
+                    <button data-interval="5m">5M</button>
+                    <button data-interval="15m">15M</button>
+                    <button data-interval="1h">1H</button>
+                    <button data-interval="4h">4H</button>
+                    <button data-interval="1d">1D</button>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="priceChart"></canvas>
+            </div>
+        </div>
+
+        <!-- ===== ACTION BUTTONS ===== -->
+        <div class="action-buttons">
+            <a href="#" class="btn btn-primary" onclick="showForm('exchange')">
+                <i class="fas fa-arrows-left-right"></i> Exchange
+            </a>
+            <a href="#" class="btn btn-secondary" onclick="showForm('loan')">
+                <i class="fas fa-hand-holding-dollar"></i> Loan
+            </a>
+        </div>
+
+        <!-- ===== EXCHANGE FORM ===== -->
+        <div class="form-section" id="formExchange">
+            <h2>🔄 Exchange Money</h2>
+            <p class="subtitle">Fill in the form and our CS will contact you within 1x24 hours.</p>
+            <form id="exchangeForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name <span class="required">*</span></label>
+                        <input type="text" id="exName" placeholder="John Doe" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" id="exEmail" placeholder="john@example.com" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp Number <span class="required">*</span></label>
+                    <input type="tel" id="exWa" placeholder="081234567890" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Transaction Type <span class="required">*</span></label>
+                        <select id="exType" required>
+                            <option value="">Select...</option>
+                            <option value="usdt_to_php">Buy PHP (Sell USDT)</option>
+                            <option value="php_to_usdt">Buy USDT (Sell PHP)</option>
+                            <option value="usdt_to_idr">Buy IDR (Sell USDT)</option>
+                            <option value="idr_to_usdt">Buy USDT (Sell IDR)</option>
+                            <option value="php_to_idr">Buy IDR (Sell PHP)</option>
+                            <option value="idr_to_php">Buy PHP (Sell IDR)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount <span class="required">*</span></label>
+                        <input type="number" id="exAmount" placeholder="Enter amount" required />
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Submit Request</button>
+            </form>
+            <div id="exStatus" class="status-msg"></div>
+        </div>
+
+        <!-- ===== LOAN SECTION ===== -->
+        <div class="form-section" id="formLoan">
+            <h2>💰 Loan Application</h2>
+            <p class="subtitle">Choose your collateral type below.</p>
+
+            <div class="loan-tabs">
+                <button class="active" data-loan="ktp"><i class="fas fa-id-card"></i> KTP</button>
+                <button data-loan="passport"><i class="fas fa-passport"></i> Passport</button>
+                <button data-loan="crypto"><i class="fas fa-bitcoin"></i> Crypto</button>
+            </div>
+
+            <!-- KTP -->
+            <div class="loan-form active" id="loanKtp">
+                <div class="form-title">🪪 Loan with KTP Collateral</div>
+                <form id="loanKtpForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" id="lkName" placeholder="John Doe" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input type="email" id="lkEmail" placeholder="john@example.com" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Number <span class="required">*</span></label>
+                        <input type="tel" id="lkWa" placeholder="081234567890" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Loan Amount (IDR) <span class="required">*</span></label>
+                            <input type="number" id="lkAmount" placeholder="Min. 1,000,000" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Tenor <span class="required">*</span></label>
+                            <select id="lkTenor" required>
+                                <option value="">Select...</option>
+                                <option value="7_days">7 Days</option>
+                                <option value="15_days">15 Days</option>
+                                <option value="30_days">30 Days</option>
+                                <option value="60_days">60 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload KTP (ID Card) <span class="required">*</span></label>
+                        <input type="file" id="lkFile" accept="image/*" required />
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Submit KTP Loan</button>
+                </form>
+                <div id="lkStatus" class="status-msg"></div>
+            </div>
+
+            <!-- PASSPORT -->
+            <div class="loan-form" id="loanPassport">
+                <div class="form-title">📘 Loan with Passport Collateral</div>
+                <form id="loanPassportForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" id="lpName" placeholder="John Doe" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input type="email" id="lpEmail" placeholder="john@example.com" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Number <span class="required">*</span></label>
+                        <input type="tel" id="lpWa" placeholder="081234567890" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Passport Number <span class="required">*</span></label>
+                            <input type="text" id="lpPassNo" placeholder="A1234567" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Nationality <span class="required">*</span></label>
+                            <input type="text" id="lpNationality" placeholder="Indonesian" required />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Loan Amount (IDR) <span class="required">*</span></label>
+                            <input type="number" id="lpAmount" placeholder="Min. 1,000,000" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Tenor <span class="required">*</span></label>
+                            <select id="lpTenor" required>
+                                <option value="">Select...</option>
+                                <option value="7_days">7 Days</option>
+                                <option value="15_days">15 Days</option>
+                                <option value="30_days">30 Days</option>
+                                <option value="60_days">60 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Passport Photo <span class="required">*</span></label>
+                        <input type="file" id="lpFile" accept="image/*" required />
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Submit Passport Loan</button>
+                </form>
+                <div id="lpStatus" class="status-msg"></div>
+            </div>
+
+            <!-- CRYPTO -->
+            <div class="loan-form" id="loanCrypto">
+                <div class="form-title">₿ Loan with Crypto Collateral</div>
+                <p class="subtitle" style="font-size:0.8rem;">We accept: USDT, BTC, ETH, BNB, SOL, and more.</p>
+                <form id="loanCryptoForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" id="lcName" placeholder="John Doe" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input type="email" id="lcEmail" placeholder="john@example.com" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Number <span class="required">*</span></label>
+                        <input type="tel" id="lcWa" placeholder="081234567890" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Crypto Asset <span class="required">*</span></label>
+                            <select id="lcAsset" required>
+                                <option value="">Select...</option>
+                                <option value="USDT">USDT (Tether)</option>
+                                <option value="BTC">Bitcoin (BTC)</option>
+                                <option value="ETH">Ethereum (ETH)</option>
+                                <option value="BNB">BNB</option>
+                                <option value="SOL">Solana (SOL)</option>
+                                <option value="XRP">XRP</option>
+                                <option value="ADA">Cardano (ADA)</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Crypto Amount <span class="required">*</span></label>
+                            <input type="text" id="lcAmount" placeholder="e.g. 0.5 BTC or 1000 USDT" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Wallet Address <span class="required">*</span></label>
+                        <input type="text" id="lcWallet" placeholder="0x... or 1A..." required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Loan Amount (IDR) <span class="required">*</span></label>
+                            <input type="number" id="lcAmountLoan" placeholder="Min. 1,000,000" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Tenor <span class="required">*</span></label>
+                            <select id="lcTenor" required>
+                                <option value="">Select...</option>
+                                <option value="7_days">7 Days</option>
+                                <option value="15_days">15 Days</option>
+                                <option value="30_days">30 Days</option>
+                                <option value="60_days">60 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Wallet Screenshot / Proof of Balance <span class="required">*</span></label>
+                        <input type="file" id="lcFile" accept="image/*" required />
+                    </div>
+                    <button type="submit" class="btn-submit-crypto"><i class="fas fa-paper-plane"></i> Submit Crypto Loan</button>
+                </form>
+                <div id="lcStatus" class="status-msg"></div>
+            </div>
+        </div>
+
+        <!-- ===== CONTACT ===== -->
+        <div class="contact-section">
+            <h3><i class="fas fa-headset"></i> Contact Us</h3>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:12px;">For more information, reach out to our CS:</p>
+            <a href="https://t.me/Huann99" target="_blank" class="telegram-link">
+                <i class="fab fa-telegram-plane"></i> @Huann99
+            </a>
+            <p style="color:var(--text-muted);font-size:0.7rem;margin-top:10px;">Response within 1x24 hours</p>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer">
+            &copy; 2026 SuperExchange. All rights reserved.
+        </div>
+
+    </div>
+
+    <!-- ===== SCRIPT ===== -->
+    <script>
+        // =============================================
+        // 1. CLOCK
+        // =============================================
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clockDisplay').textContent = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // =============================================
+        // 2. NAVIGATION: SHOW FORM
+        // =============================================
+        function showForm(type) {
+            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
+            if (type === 'exchange') {
+                document.getElementById('formExchange').classList.add('active');
+                document.getElementById('formExchange').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else if (type === 'loan') {
+                document.getElementById('formLoan').classList.add('active');
+                document.getElementById('formLoan').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // =============================================
+        // 3. LOAN TABS
+        // =============================================
+        document.querySelectorAll('.loan-tabs button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.loan-tabs button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const target = this.dataset.loan;
+                document.querySelectorAll('.loan-form').forEach(el => el.classList.remove('active'));
+                document.getElementById('loan' + target.charAt(0).toUpperCase() + target.slice(1)).classList.add(
+                'active');
+            });
+        });
+
+        // =============================================
+        // 4. FETCH RATES
+        // =============================================
+        let previousRates = {};
+
+        async function fetchRates() {
+            try {
+                const resUsdt = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=idr,php');
+                const dataUsdt = await resUsdt.json();
+
+                const resPhp = await fetch('https://api.exchangerate-api.com/v4/latest/PHP');
+                const dataPhp = await resPhp.json();
+
+                const usdtIdr = dataUsdt.tether.idr;
+                const usdtPhp = dataUsdt.tether.php;
+                const phpIdr = dataPhp.rates.IDR;
+
+                const phpUsdt = 1 / usdtPhp;
+                const idrUsdt = 1 / usdtIdr;
+                const idrPhp = 1 / phpIdr;
+
+                const rates = {
+                    usdtIdr,
+                    usdtPhp,
+                    phpIdr,
+                    phpUsdt,
+                    idrUsdt,
+                    idrPhp
+                };
+
+                const ids = ['usdtIdr', 'usdtPhp', 'phpIdr', 'phpUsdt', 'idrUsdt', 'idrPhp'];
+                const symbols = ['Rp ', '₱ ', 'Rp ', '$ ', '$ ', '₱ '];
+
+                ids.forEach((id, i) => {
+                    const val = Object.values(rates)[i];
+                    const formatted = typeof val === 'number' && val < 1 ? val.toFixed(6) : val.toLocaleString(
+                    'id-ID');
+                    document.getElementById(id).textContent = symbols[i] + formatted;
+
+                    // Change %
+                    const changeEl = document.getElementById(id + 'Change');
+                    if (previousRates[id]) {
+                        const change = ((val - previousRates[id]) / previousRates[id]) * 100;
+                        changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+                        changeEl.className = 'change ' + (change >= 0 ? 'positive' : 'negative');
+                    } else {
+                        changeEl.textContent = '+0.00%';
+                        changeEl.className = 'change positive';
+                    }
+                });
+
+                previousRates = rates;
+
+                document.getElementById('lastUpdate').textContent =
+                    '⏳ Last update: ' + new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+
+                // Update chart
+                updateChart(usdtIdr);
+
+            } catch (error) {
+                console.error('Error fetching rates:', error);
+                document.getElementById('lastUpdate').textContent = '⚠️ Failed to fetch rates. Refresh page.';
+            }
+        }
+
+        // =============================================
+        // 5. CHART
+        // =============================================
+        let chartInstance = null;
+        let chartData = [];
+        const MAX_DATA_POINTS = 60;
+
+        function updateChart(newPrice) {
+            const now = new Date();
+            const timeLabel = now.getHours().toString().padStart(2, '0') + ':' +
+                now.getMinutes().toString().padStart(2, '0');
+
+            chartData.push({ x: timeLabel, y: newPrice });
+            if (chartData.length > MAX_DATA_POINTS) {
+                chartData.shift();
+            }
+
+            if (chartInstance) {
+                chartInstance.data.labels = chartData.map(d => d.x);
+                chartInstance.data.datasets[0].data = chartData.map(d => d.y);
+                chartInstance.update('none');
+            }
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+            gradient.addColorStop(0, 'rgba(240, 185, 11, 0.25)');
+            gradient.addColorStop(1, 'rgba(240, 185, 11, 0.00)');
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'USDT / IDR',
+                        data: [],
+                        borderColor: '#F0B90B',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                        pointHoverBackgroundColor: '#F0B90B',
+                        tension: 0.3,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: '#1E2329',
+                            titleColor: '#EAECEF',
+                            bodyColor: '#F0B90B',
+                            borderColor: '#2B3139',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            padding: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(43, 49, 57, 0.3)',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#5E6673',
+                                font: { size: 9, family: 'Inter' },
+                                maxTicksLimit: 12,
+                            },
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(43, 49, 57, 0.3)',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#5E6673',
+                                font: { size: 9, family: 'Inter' },
+                                callback: function(value) {
+                                    return 'Rp ' + value.toLocaleString('id-ID');
+                                }
+                            },
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                }
+            });
+        }
+
+        // =============================================
+        // 6. CHART TABS (change interval - just visual)
+        // =============================================
+        document.querySelectorAll('.chart-tabs button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.chart-tabs button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // Just visual feedback - real interval change would need more data
+            });
+        });
+
+        // =============================================
+        // 7. FORM HANDLERS
+        // =============================================
+
+        // Exchange Form
+        document.getElementById('exchangeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('exName').value.trim();
+            const email = document.getElementById('exEmail').value.trim();
+            const wa = document.getElementById('exWa').value.trim();
+            const type = document.getElementById('exType').value;
+            const amount = document.getElementById('exAmount').value.trim();
+
+            const status = document.getElementById('exStatus');
+            if (name && email && wa && type && amount) {
+                status.className = 'status-msg success';
+                status.textContent = '✅ Request received! CS will contact you via WhatsApp within 1x24 hours.';
+                this.reset();
+            } else {
+                status.className = 'status-msg error';
+                status.textContent = '⚠️ Please complete all required fields!';
+            }
+        });
+
+        // KTP Loan
+        document.getElementById('loanKtpForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const status = document.getElementById('lkStatus');
+            if (this.querySelector('#lkName').value.trim() &&
+                this.querySelector('#lkEmail').value.trim() &&
+                this.querySelector('#lkWa').value.trim() &&
+                this.querySelector('#lkAmount').value.trim() &&
+                this.querySelector('#lkTenor').value &&
+                this.querySelector('#lkFile').files[0]) {
+                status.className = 'status-msg success';
+                status.textContent = '✅ KTP Loan received! CS will contact you within 1x24 hours.';
+                this.reset();
+            } else {
+                status.className = 'status-msg error';
+                status.textContent = '⚠️ Please complete all required fields including KTP upload!';
+            }
+        });
+
+        // Passport Loan
+        document.getElementById('loanPassportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const status = document.getElementById('lpStatus');
+            if (this.querySelector('#lpName').value.trim() &&
+                this.querySelector('#lpEmail').value.trim() &&
+                this.querySelector('#lpWa').value.trim() &&
+                this.querySelector('#lpPassNo').value.trim() &&
+                this.querySelector('#lpNationality').value.trim() &&
+                this.querySelector('#lpAmount').value.trim() &&
+                this.querySelector('#lpTenor').value &&
+                this.querySelector('#lpFile').files[0]) {
+                status.className = 'status-msg success';
+                status.textContent = '✅ Passport Loan received! CS will contact you within 1x24 hours.';
+                this.reset();
+            } else {
+                status.className = 'status-msg error';
+                status.textContent = '⚠️ Please complete all required fields including Passport upload!';
+            }
+        });
+
+        // Crypto Loan
+        document.getElementById('loanCryptoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const status = document.getElementById('lcStatus');
+            if (this.querySelector('#lcName').value.trim() &&
+                this.querySelector('#lcEmail').value.trim() &&
+                this.querySelector('#lcWa').value.trim() &&
+                this.querySelector('#lcAsset').value &&
+                this.querySelector('#lcAmount').value.trim() &&
+                this.querySelector('#lcWallet').value.trim() &&
+                this.querySelector('#lcAmountLoan').value.trim() &&
+                this.querySelector('#lcTenor').value &&
+                this.querySelector('#lcFile').files[0]) {
+                status.className = 'status-msg success';
+                status.textContent = '✅ Crypto Loan received! CS will contact you within 1x24 hours.';
+                this.reset();
+            } else {
+                status.className = 'status-msg error';
+                status.textContent = '⚠️ Please complete all required fields including proof upload!';
+            }
+        });
+
+        // =============================================
+        // 8. INIT
+        // =============================================
+        initChart();
+        fetchRates();
+        setInterval(fetchRates, 30000); // Update every 30 seconds
+
+        // Auto-refresh chart with slight variation for demo
+        setInterval(() => {
+            if (previousRates.usdtIdr) {
+                const variation = (Math.random() - 0.5) * 200;
+                const newPrice = Math.max(previousRates.usdtIdr + variation, 15000);
+                updateChart(newPrice);
+            }
+        }, 5000);
+
+        console.log('⚡ SuperExchange initialized');
+        console.log('📊 Binance-style UI with Chart.js');
+    </script>
+
+</body>
+</html>
