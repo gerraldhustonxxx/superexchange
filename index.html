@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
     </script>
     <style>
-        /* ===== SAME AS BEFORE, FULL CSS ===== */
+        /* ===== SAME AS BEFORE (CSS tidak berubah) ===== */
         :root {
             --bg-primary: #0B0E11;
             --bg-secondary: #1E2329;
@@ -1318,14 +1318,22 @@
             </div>
         </div>
 
-        <!-- ===== HISTORY ===== -->
+        <!-- ===== HISTORY (PERBAIKAN: Email Hilang, Amount Sesuai Mata Uang) ===== -->
         <div class="history-section" id="formHistory">
             <div class="history-header"><div class="icon-circle"><i class="fas fa-clock-rotate-left"></i></div><h2 data-lang="history_title">Transaction History</h2></div>
             <p class="subtitle" data-lang="history_sub">View all past exchange and loan requests.</p>
             <div id="historyLoading" class="history-loading"><i class="fas fa-spinner"></i><p data-lang="loading_data">Loading data from Google Sheets...</p></div>
             <div class="history-table-wrapper" id="historyContainer" style="display:none;">
                 <table class="history-table">
-                    <thead><tr><th data-lang="date">Date</th><th data-lang="name">Name</th><th data-lang="email">Email</th><th data-lang="type">Type</th><th data-lang="amount">Amount</th><th data-lang="status">Status</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th data-lang="date">Date</th>
+                            <th data-lang="name">Name</th>
+                            <th data-lang="type">Type</th>
+                            <th data-lang="amount">Amount</th>
+                            <th data-lang="status">Status</th>
+                        </tr>
+                    </thead>
                     <tbody id="historyBody"></tbody>
                 </table>
             </div>
@@ -1461,8 +1469,8 @@
                 loading_data: 'Loading data from Google Sheets...',
                 date: 'Date',
                 name: 'Name',
-                email: 'Email',
                 type: 'Type',
+                amount: 'Amount',
                 status: 'Status',
                 no_transactions: 'No transactions yet. Data will appear here once users submit requests.',
                 legal_title: 'Legal Information',
@@ -1487,7 +1495,6 @@
                 support_text: 'Our team is ready to assist you.',
                 response_time_footer: 'Response within 5 minutes'
             },
-            // ... other languages (id, zh, vi, my, tl) - same as before
             id: {
                 live: 'Live',
                 exchange: 'Tukar Uang',
@@ -1549,8 +1556,8 @@
                 loading_data: 'Memuat data dari Google Sheets...',
                 date: 'Tanggal',
                 name: 'Nama',
-                email: 'Email',
                 type: 'Jenis',
+                amount: 'Jumlah',
                 status: 'Status',
                 no_transactions: 'Belum ada transaksi. Data akan muncul setelah pengguna mengirim permintaan.',
                 legal_title: 'Informasi Hukum',
@@ -1636,8 +1643,8 @@
                 loading_data: '正在从 Google Sheets 加载数据...',
                 date: '日期',
                 name: '姓名',
-                email: '电子邮件',
                 type: '类型',
+                amount: '金额',
                 status: '状态',
                 no_transactions: '暂无交易。用户提交请求后将显示数据。',
                 legal_title: '法律信息',
@@ -1723,8 +1730,8 @@
                 loading_data: 'Đang tải dữ liệu từ Google Sheets...',
                 date: 'Ngày',
                 name: 'Tên',
-                email: 'Email',
                 type: 'Loại',
+                amount: 'Số tiền',
                 status: 'Trạng thái',
                 no_transactions: 'Chưa có giao dịch nào. Dữ liệu sẽ xuất hiện sau khi người dùng gửi yêu cầu.',
                 legal_title: 'Thông tin pháp lý',
@@ -1810,8 +1817,8 @@
                 loading_data: 'Google Sheets မှ ဒေတာဖတ်နေသည်...',
                 date: 'ရက်စွဲ',
                 name: 'အမည်',
-                email: 'အီးမေးလ်',
                 type: 'အမျိုးအစား',
+                amount: 'ပမာဏ',
                 status: 'အခြေအနေ',
                 no_transactions: 'ငွေပေးငွေယူမရှိသေးပါ။ အသုံးပြုသူများ တောင်းဆိုမှုတင်ပြပြီးနောက် ဒေတာပေါ်လာပါမည်။',
                 legal_title: 'ဥပဒေဆိုင်ရာ အချက်အလက်',
@@ -1897,8 +1904,8 @@
                 loading_data: 'Naglo-load ng data mula sa Google Sheets...',
                 date: 'Petsa',
                 name: 'Pangalan',
-                email: 'Email',
                 type: 'Uri',
+                amount: 'Halaga',
                 status: 'Katayuan',
                 no_transactions: 'Wala pang transaksyon. Lalabas ang data kapag nag-submit na ang mga user.',
                 legal_title: 'Impormasyong Legal',
@@ -2057,7 +2064,7 @@
         });
 
         // ============================================================
-        // FETCH RATES - NEW STABLE API + FALLBACK
+        // FETCH RATES
         // ============================================================
         let rates = {
             usdtIdr: 17600,
@@ -2071,7 +2078,6 @@
 
         async function fetchRates() {
             try {
-                // Try CoinGecko first
                 const resUsdt = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=idr,php');
                 if (resUsdt.ok) {
                     const dataUsdt = await resUsdt.json();
@@ -2090,10 +2096,8 @@
                 }
             } catch (error) {
                 console.warn('Primary API failed, using fallback rates:', error);
-                // Keep fallback rates
             }
 
-            // Always update UI with current rates (either fetched or fallback)
             const ids = ['usdtIdr', 'usdtPhp', 'phpIdr', 'phpUsdt', 'idrUsdt', 'idrPhp'];
             const symbols = ['Rp ', '₱ ', 'Rp ', '$ ', '$ ', '₱ '];
             ids.forEach((id, i) => {
@@ -2261,7 +2265,7 @@
         }
 
         // ============================================================
-        // HISTORY
+        // HISTORY - PERBAIKAN (Email Hilang, Amount Sesuai Mata Uang)
         // ============================================================
         const SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT7BgGqqbA5l-pLHs_ZDQyfnjYCXT1MY3tt5cTggBS_U-pWNu7CLgiKhZx7LTSFxsFlnH8CrutDvo14/pub?output=csv';
 
@@ -2289,9 +2293,7 @@
                 const headers = rows[0];
                 const dateIdx = headers.findIndex(h => h.toLowerCase().includes('timestamp'));
                 const nameIdx = headers.findIndex(h => h.toLowerCase().includes('full name'));
-                const emailIdx = headers.findIndex(h => h.toLowerCase().includes('email'));
-                const typeIdx = headers.findIndex(h => h.toLowerCase().includes('transaction type') || h.toLowerCase()
-                    .includes('type'));
+                const typeIdx = headers.findIndex(h => h.toLowerCase().includes('transaction type') || h.toLowerCase().includes('type'));
                 const amountIdx = headers.findIndex(h => h.toLowerCase().includes('amount'));
                 const statusIdx = headers.findIndex(h => h.toLowerCase().includes('status'));
 
@@ -2302,16 +2304,42 @@
 
                     const date = row[dateIdx] || '';
                     const name = row[nameIdx] || '';
-                    const email = row[emailIdx] || '';
                     const type = row[typeIdx] || '';
-                    const amount = row[amountIdx] ? 'Rp ' + parseFloat(row[amountIdx]).toLocaleString('id-ID') : '';
+                    let amount = row[amountIdx] || '0';
                     let status = row[statusIdx] || 'Pending';
+
+                    // Tentukan simbol berdasarkan jenis transaksi
+                    let symbol = 'Rp ';
+                    const typeLower = type.toLowerCase();
+                    if (typeLower.includes('usdt') && (typeLower.includes('sell') || typeLower.includes('jual'))) {
+                        symbol = '$ ';
+                    } else if (typeLower.includes('php') && (typeLower.includes('sell') || typeLower.includes('jual'))) {
+                        symbol = '₱ ';
+                    } else if (typeLower.includes('usdt') && (typeLower.includes('buy') || typeLower.includes('beli'))) {
+                        symbol = '$ ';
+                    } else if (typeLower.includes('php') && (typeLower.includes('buy') || typeLower.includes('beli'))) {
+                        symbol = '₱ ';
+                    } else if (typeLower.includes('idr') && (typeLower.includes('sell') || typeLower.includes('jual'))) {
+                        symbol = 'Rp ';
+                    } else if (typeLower.includes('idr') && (typeLower.includes('buy') || typeLower.includes('beli'))) {
+                        symbol = 'Rp ';
+                    }
+
+                    const formattedAmount = symbol + parseFloat(amount).toLocaleString('id-ID');
+
                     status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
                     if (!['Pending', 'Processed', 'Done'].includes(status)) status = 'Pending';
                     const statusClass = status.toLowerCase();
 
-                    html +=
-                        `<tr><td>${date}</td><td>${name}</td><td>${email}</td><td>${type}</td><td>${amount}</td><td><span class="status-badge ${statusClass}">${status}</span></td></tr>`;
+                    html += `
+                        <tr>
+                            <td>${date}</td>
+                            <td>${name}</td>
+                            <td>${type}</td>
+                            <td>${formattedAmount}</td>
+                            <td><span class="status-badge ${statusClass}">${status}</span></td>
+                        </tr>
+                    `;
                 }
 
                 if (html === '') {
@@ -2429,8 +2457,9 @@
             }
         }, 5000);
 
-        console.log('🚀 SUPEREXCHANGE - RATES FIXED!');
-        console.log('✅ Fallback rates ready if API fails.');
+        console.log('🚀 SUPEREXCHANGE - HISTORY FIXED!');
+        console.log('✅ Email removed from History.');
+        console.log('✅ Currency symbol based on Transaction Type.');
         console.log('📱 Access: https://gerraldhustonxxx.github.io/superexchange/');
     </script>
 
